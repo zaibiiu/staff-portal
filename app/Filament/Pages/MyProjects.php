@@ -5,13 +5,11 @@ namespace App\Filament\Pages;
 use App\Models\Project;
 use BackedEnum;
 use Filament\Pages\Page;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
@@ -22,7 +20,7 @@ class MyProjects extends Page implements HasTable
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
 
-    protected static string|View|null $view = 'filament.pages.my-projects';
+    protected string $view = 'filament.pages.my-projects';
 
     protected static string|UnitEnum|null $navigationGroup = 'My Portal';
 
@@ -40,21 +38,25 @@ class MyProjects extends Page implements HasTable
                     ->searchable()
                     ->sortable()
                     ->limit(30),
-                BadgeColumn::make('stage')
-                    ->colors([
-                        'secondary' => 'pending',
-                        'info' => 'planning',
-                        'primary' => 'in_progress',
-                        'warning' => 'review',
-                        'success' => 'completed',
-                    ]),
-                BadgeColumn::make('status')
-                    ->colors([
-                        'success' => 'active',
-                        'warning' => 'on_hold',
-                        'primary' => 'completed',
-                        'danger' => 'cancelled',
-                    ]),
+                TextColumn::make('stage')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'gray',
+                        'planning' => 'info',
+                        'in_progress' => 'primary',
+                        'review' => 'warning',
+                        'completed' => 'success',
+                        default => 'gray',
+                    }),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'on_hold' => 'warning',
+                        'completed' => 'primary',
+                        'cancelled' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('start_date')
                     ->date()
                     ->sortable(),

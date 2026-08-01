@@ -6,11 +6,14 @@ use App\Models\Attendance;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
+    protected static ?int $sort = 1;
+    
     protected function getStats(): array
     {
         $totalStaff = User::where('role', 'staff')->count();
@@ -25,27 +28,39 @@ class StatsOverview extends BaseWidget
 
         return [
             Stat::make('Total Staff', $totalStaff)
-                ->description('Active: ' . $activeStaff)
-                ->descriptionIcon('heroicon-m-users')
+                ->description("{$activeStaff} active staff members")
+                ->descriptionIcon('heroicon-m-arrow-trending-up', IconPosition::Before)
+                ->chart([7, 12, 18, 22, 28, 35, $totalStaff])
                 ->color('success')
-                ->chart([7, 12, 18, 22, 28, 35, $totalStaff]),
+                ->extraAttributes([
+                    'class' => 'cursor-pointer transition hover:scale-105',
+                ]),
             
-            Stat::make('Total Projects', $totalProjects)
-                ->description('Active: ' . $activeProjects)
-                ->descriptionIcon('heroicon-m-briefcase')
+            Stat::make('Projects', $totalProjects)
+                ->description("{$activeProjects} active projects")
+                ->descriptionIcon('heroicon-m-arrow-trending-up', IconPosition::Before)
+                ->chart([2, 5, 8, 12, 15, 18, $totalProjects])
                 ->color('primary')
-                ->chart([2, 5, 8, 12, 15, 18, $totalProjects]),
+                ->extraAttributes([
+                    'class' => 'cursor-pointer transition hover:scale-105',
+                ]),
             
             Stat::make('Pending Tasks', $pendingTasks)
-                ->description('Completed: ' . $completedTasks)
-                ->descriptionIcon('heroicon-m-clipboard-document-list')
+                ->description("{$completedTasks} completed")
+                ->descriptionIcon('heroicon-m-check-circle', IconPosition::Before)
+                ->chart([15, 12, 18, 10, 15, 12, $pendingTasks])
                 ->color('warning')
-                ->chart([15, 12, 18, 10, 15, 12, $pendingTasks]),
+                ->extraAttributes([
+                    'class' => 'cursor-pointer transition hover:scale-105',
+                ]),
             
             Stat::make('Today\'s Attendance', $todayPresent)
                 ->description('Present today')
-                ->descriptionIcon('heroicon-m-check-circle')
-                ->color('success'),
+                ->descriptionIcon('heroicon-m-user-group', IconPosition::Before)
+                ->color('info')
+                ->extraAttributes([
+                    'class' => 'cursor-pointer transition hover:scale-105',
+                ]),
         ];
     }
 }

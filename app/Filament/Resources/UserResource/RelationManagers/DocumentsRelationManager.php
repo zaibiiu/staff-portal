@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 
 class DocumentsRelationManager extends RelationManager
 {
@@ -66,15 +66,17 @@ class DocumentsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('document_type')
+                Tables\Columns\TextColumn::make('document_type')
                     ->label('Type')
-                    ->colors([
-                        'primary' => 'cnic',
-                        'success' => 'contract',
-                        'warning' => 'certificate',
-                        'info' => 'degree',
-                        'danger' => 'other',
-                    ]),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'cnic' => 'primary',
+                        'contract' => 'success',
+                        'certificate' => 'warning',
+                        'degree' => 'info',
+                        'other' => 'danger',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('file_name')
                     ->searchable()
                     ->limit(30),

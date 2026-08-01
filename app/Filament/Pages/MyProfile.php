@@ -5,7 +5,6 @@ namespace App\Filament\Pages;
 use BackedEnum;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -13,7 +12,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Illuminate\Contracts\View\View;
+use Filament\Schemas\Components\Section;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
@@ -23,7 +22,7 @@ class MyProfile extends Page implements HasForms
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
-    protected static string|View|null $view = 'filament.pages.my-profile';
+    protected string $view = 'filament.pages.my-profile';
 
     protected static string|UnitEnum|null $navigationGroup = 'My Portal';
 

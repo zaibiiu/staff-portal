@@ -6,10 +6,19 @@ use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Project;
 use BackedEnum;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -25,19 +34,19 @@ class ProjectResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make('Project Details')
+                Section::make('Project Details')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        TextInput::make('name')
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
-                        Forms\Components\Textarea::make('description')
+                        Textarea::make('description')
                             ->rows(4)
                             ->columnSpanFull(),
-                        Forms\Components\DatePicker::make('start_date')
+                        DatePicker::make('start_date')
                             ->default(now()),
-                        Forms\Components\DatePicker::make('deadline'),
-                        Forms\Components\Select::make('stage')
+                        DatePicker::make('deadline'),
+                        Select::make('stage')
                             ->options([
                                 'pending' => 'Pending',
                                 'planning' => 'Planning',
@@ -47,7 +56,7 @@ class ProjectResource extends Resource
                             ])
                             ->default('pending')
                             ->required(),
-                        Forms\Components\Select::make('status')
+                        Select::make('status')
                             ->options([
                                 'active' => 'Active',
                                 'on_hold' => 'On Hold',
@@ -58,9 +67,9 @@ class ProjectResource extends Resource
                             ->required(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Team Members')
+                Section::make('Team Members')
                     ->schema([
-                        Forms\Components\Select::make('users')
+                        Select::make('users')
                             ->relationship('users', 'name')
                             ->multiple()
                             ->searchable()
@@ -110,7 +119,7 @@ class ProjectResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('stage')
+                SelectFilter::make('stage')
                     ->options([
                         'pending' => 'Pending',
                         'planning' => 'Planning',
@@ -118,7 +127,7 @@ class ProjectResource extends Resource
                         'review' => 'Review',
                         'completed' => 'Completed',
                     ]),
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->options([
                         'active' => 'Active',
                         'on_hold' => 'On Hold',
@@ -127,12 +136,12 @@ class ProjectResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

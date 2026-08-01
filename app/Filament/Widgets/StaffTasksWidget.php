@@ -4,24 +4,23 @@ namespace App\Filament\Widgets;
 
 use App\Models\Task;
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\Auth;
 
 class StaffTasksWidget extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
-
     protected static ?int $sort = 2;
+    
+    protected int | string | array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
@@ -33,25 +32,31 @@ class StaffTasksWidget extends BaseWidget
                     ->latest()
                     ->limit(10)
             )
+            ->heading('My Tasks')
+            ->description('Your assigned tasks and their current status')
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
                     ->limit(40),
                 TextColumn::make('project.name')
                     ->default('N/A'),
-                BadgeColumn::make('priority')
-                    ->colors([
-                        'success' => 'low',
-                        'primary' => 'medium',
-                        'warning' => 'high',
-                        'danger' => 'urgent',
-                    ]),
-                BadgeColumn::make('status')
-                    ->colors([
-                        'warning' => 'pending',
-                        'primary' => 'in_progress',
-                        'success' => 'completed',
-                    ]),
+                TextColumn::make('priority')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'low' => 'success',
+                        'medium' => 'primary',
+                        'high' => 'warning',
+                        'urgent' => 'danger',
+                        default => 'gray',
+                    }),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'warning',
+                        'in_progress' => 'primary',
+                        'completed' => 'success',
+                        default => 'gray',
+                    }),
                 TextColumn::make('due_date')
                     ->date()
                     ->sortable(),

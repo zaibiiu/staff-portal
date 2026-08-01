@@ -5,10 +5,19 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TaskResource\Pages;
 use App\Models\Task;
 use BackedEnum;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -24,25 +33,25 @@ class TaskResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
-                        Forms\Components\TextInput::make('title')
+                        TextInput::make('title')
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
-                        Forms\Components\Textarea::make('description')
+                        Textarea::make('description')
                             ->rows(4)
                             ->columnSpanFull(),
-                        Forms\Components\Select::make('project_id')
+                        Select::make('project_id')
                             ->relationship('project', 'name')
                             ->searchable()
                             ->preload(),
-                        Forms\Components\Select::make('user_id')
+                        Select::make('user_id')
                             ->relationship('user', 'name')
                             ->searchable()
                             ->preload()
                             ->required(),
-                        Forms\Components\Select::make('priority')
+                        Select::make('priority')
                             ->options([
                                 'low' => 'Low',
                                 'medium' => 'Medium',
@@ -51,8 +60,8 @@ class TaskResource extends Resource
                             ])
                             ->default('medium')
                             ->required(),
-                        Forms\Components\DatePicker::make('due_date'),
-                        Forms\Components\Select::make('status')
+                        DatePicker::make('due_date'),
+                        Select::make('status')
                             ->options([
                                 'pending' => 'Pending',
                                 'in_progress' => 'In Progress',
@@ -102,31 +111,31 @@ class TaskResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
                         'in_progress' => 'In Progress',
                         'completed' => 'Completed',
                     ]),
-                Tables\Filters\SelectFilter::make('priority')
+                SelectFilter::make('priority')
                     ->options([
                         'low' => 'Low',
                         'medium' => 'Medium',
                         'high' => 'High',
                         'urgent' => 'Urgent',
                     ]),
-                Tables\Filters\SelectFilter::make('project_id')
+                SelectFilter::make('project_id')
                     ->relationship('project', 'name')
                     ->searchable()
                     ->preload(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

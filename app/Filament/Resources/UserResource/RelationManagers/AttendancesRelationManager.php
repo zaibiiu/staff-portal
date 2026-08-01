@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 
 class AttendancesRelationManager extends RelationManager
 {
@@ -53,13 +53,15 @@ class AttendancesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->colors([
-                        'success' => 'present',
-                        'danger' => 'absent',
-                        'warning' => 'leave',
-                        'primary' => 'late',
-                    ]),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'present' => 'success',
+                        'absent' => 'danger',
+                        'leave' => 'warning',
+                        'late' => 'primary',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('check_in')
                     ->time()
                     ->default('N/A'),

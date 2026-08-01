@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Schemas\Components\Section;
 
 class StaffProfileRelationManager extends RelationManager
 {
@@ -23,7 +24,7 @@ class StaffProfileRelationManager extends RelationManager
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make('Personal Information')
+                Section::make('Personal Information')
                     ->schema([
                         Forms\Components\TextInput::make('employee_id')
                             ->label('Employee ID')
@@ -47,7 +48,7 @@ class StaffProfileRelationManager extends RelationManager
                         Forms\Components\DatePicker::make('date_of_birth'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Emergency Contact')
+                Section::make('Emergency Contact')
                     ->schema([
                         Forms\Components\TextInput::make('emergency_contact_name')
                             ->maxLength(255),
@@ -56,7 +57,7 @@ class StaffProfileRelationManager extends RelationManager
                             ->maxLength(255),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Employment Details')
+                Section::make('Employment Details')
                     ->schema([
                         Forms\Components\Select::make('department_id')
                             ->relationship('department', 'name')
@@ -84,7 +85,7 @@ class StaffProfileRelationManager extends RelationManager
                             ->required(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Additional Notes')
+                Section::make('Additional Notes')
                     ->schema([
                         Forms\Components\Textarea::make('notes')
                             ->rows(3)
@@ -107,12 +108,15 @@ class StaffProfileRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('designation')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone'),
-                Tables\Columns\BadgeColumn::make('employment_status')
-                    ->colors([
-                        'success' => 'active',
-                        'warning' => 'on_leave',
-                        'danger' => fn ($state) => in_array($state, ['inactive', 'terminated']),
-                    ]),
+                Tables\Columns\TextColumn::make('employment_status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'on_leave' => 'warning',
+                        'inactive' => 'danger',
+                        'terminated' => 'danger',
+                        default => 'gray',
+                    }),
             ])
             ->filters([
                 //

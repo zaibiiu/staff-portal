@@ -6,14 +6,13 @@ use App\Models\Task;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentTasksWidget extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
-
     protected static ?int $sort = 2;
+    
+    protected int | string | array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
@@ -24,6 +23,8 @@ class RecentTasksWidget extends BaseWidget
                     ->latest()
                     ->limit(10)
             )
+            ->heading('Recent Tasks')
+            ->description('Latest task assignments across all projects')
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
@@ -32,19 +33,23 @@ class RecentTasksWidget extends BaseWidget
                     ->label('Assigned To'),
                 TextColumn::make('project.name')
                     ->default('N/A'),
-                BadgeColumn::make('priority')
-                    ->colors([
-                        'success' => 'low',
-                        'primary' => 'medium',
-                        'warning' => 'high',
-                        'danger' => 'urgent',
-                    ]),
-                BadgeColumn::make('status')
-                    ->colors([
-                        'warning' => 'pending',
-                        'primary' => 'in_progress',
-                        'success' => 'completed',
-                    ]),
+                TextColumn::make('priority')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'low' => 'success',
+                        'medium' => 'primary',
+                        'high' => 'warning',
+                        'urgent' => 'danger',
+                        default => 'gray',
+                    }),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'warning',
+                        'in_progress' => 'primary',
+                        'completed' => 'success',
+                        default => 'gray',
+                    }),
                 TextColumn::make('due_date')
                     ->date(),
             ]);

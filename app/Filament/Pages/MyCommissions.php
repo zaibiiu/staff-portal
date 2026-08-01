@@ -9,7 +9,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
@@ -19,7 +18,7 @@ class MyCommissions extends Page implements HasTable
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static string|View|null $view = 'filament.pages.my-commissions';
+    protected string $view = 'filament.pages.my-commissions';
 
     protected static string|UnitEnum|null $navigationGroup = 'My Portal';
 

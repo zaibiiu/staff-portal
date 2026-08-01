@@ -2,6 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\StaffStatsWidget;
+use App\Filament\Widgets\StaffTasksWidget;
+use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\RecentTasksWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -12,15 +16,19 @@ class Dashboard extends BaseDashboard
 
         if ($user->isAdmin()) {
             return [
-                \App\Filament\Widgets\StatsOverview::class,
-                \App\Filament\Widgets\RecentTasksWidget::class,
+                StatsOverview::class,
+                RecentTasksWidget::class,
             ];
         }
 
-        // Staff Dashboard Widgets
         return [
-            \App\Filament\Widgets\StaffStatsWidget::class,
-            \App\Filament\Widgets\StaffTasksWidget::class,
+            StaffStatsWidget::class,
+            StaffTasksWidget::class,
         ];
+    }
+    
+    public function getColumns(): int | array
+    {
+        return 2;
     }
 }

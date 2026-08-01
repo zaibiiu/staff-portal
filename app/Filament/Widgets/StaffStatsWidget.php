@@ -4,12 +4,15 @@ namespace App\Filament\Widgets;
 
 use App\Models\Commission;
 use App\Models\Task;
+use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
 
 class StaffStatsWidget extends BaseWidget
 {
+    protected static ?int $sort = 1;
+    
     protected function getStats(): array
     {
         $user = Auth::user();
@@ -36,28 +39,43 @@ class StaffStatsWidget extends BaseWidget
         return [
             Stat::make('My Projects', $myProjects)
                 ->description('Active projects')
-                ->descriptionIcon('heroicon-m-briefcase')
-                ->color('primary'),
+                ->descriptionIcon('heroicon-m-briefcase', IconPosition::Before)
+                ->color('primary')
+                ->extraAttributes([
+                    'class' => 'transition hover:scale-105',
+                ]),
 
             Stat::make('Pending Tasks', $myPendingTasks)
-                ->description('In Progress: ' . $myInProgressTasks)
-                ->descriptionIcon('heroicon-m-clipboard-document-list')
-                ->color('warning'),
+                ->description("{$myInProgressTasks} in progress")
+                ->descriptionIcon('heroicon-m-clock', IconPosition::Before)
+                ->color('warning')
+                ->extraAttributes([
+                    'class' => 'transition hover:scale-105',
+                ]),
 
-            Stat::make('Completed Tasks', $myCompletedTasks)
+            Stat::make('Completed', $myCompletedTasks)
                 ->description('Total completed')
-                ->descriptionIcon('heroicon-m-check-circle')
-                ->color('success'),
+                ->descriptionIcon('heroicon-m-check-circle', IconPosition::Before)
+                ->color('success')
+                ->extraAttributes([
+                    'class' => 'transition hover:scale-105',
+                ]),
 
-            Stat::make('Current Salary', 'PKR ' . number_format($currentSalary, 2))
-                ->description('Monthly salary')
-                ->descriptionIcon('heroicon-m-currency-dollar')
-                ->color('info'),
+            Stat::make('Monthly Salary', 'PKR ' . number_format($currentSalary, 0))
+                ->description('Current salary')
+                ->descriptionIcon('heroicon-m-currency-dollar', IconPosition::Before)
+                ->color('info')
+                ->extraAttributes([
+                    'class' => 'transition hover:scale-105',
+                ]),
 
-            Stat::make('Total Commission', 'PKR ' . number_format($totalCommission, 2))
-                ->description('All time commission')
-                ->descriptionIcon('heroicon-m-banknotes')
-                ->color('success'),
+            Stat::make('Commissions', 'PKR ' . number_format($totalCommission, 0))
+                ->description('Total earned')
+                ->descriptionIcon('heroicon-m-banknotes', IconPosition::Before)
+                ->color('success')
+                ->extraAttributes([
+                    'class' => 'transition hover:scale-105',
+                ]),
         ];
     }
 }

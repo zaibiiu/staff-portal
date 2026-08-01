@@ -30,17 +30,25 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('Staff Portal')
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::Indigo,
+                'success' => Color::Emerald,
+                'warning' => Color::Amber,
+                'danger' => Color::Rose,
+                'info' => Color::Sky,
+                'gray' => Color::Slate,
             ])
+            ->font('Inter')
+            ->darkMode(false)
+            ->maxContentWidth('full')
+            ->sidebarCollapsibleOnDesktop()
+            ->topNavigation(false)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                Dashboard::class,
+                \App\Filament\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                // Removed default widgets
-            ])
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -54,7 +62,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->sidebarCollapsibleOnDesktop();
+            ]);
     }
 }

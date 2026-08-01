@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources\ProjectResource\RelationManagers;
 
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 
 class TasksRelationManager extends RelationManager
 {
@@ -64,19 +64,23 @@ class TasksRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Assigned To')
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('priority')
-                    ->colors([
-                        'success' => 'low',
-                        'primary' => 'medium',
-                        'warning' => 'high',
-                        'danger' => 'urgent',
-                    ]),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->colors([
-                        'warning' => 'pending',
-                        'primary' => 'in_progress',
-                        'success' => 'completed',
-                    ]),
+                Tables\Columns\TextColumn::make('priority')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'low' => 'success',
+                        'medium' => 'primary',
+                        'high' => 'warning',
+                        'urgent' => 'danger',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'warning',
+                        'in_progress' => 'primary',
+                        'completed' => 'success',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('due_date')
                     ->date()
                     ->sortable(),

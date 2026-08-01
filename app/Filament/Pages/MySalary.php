@@ -10,7 +10,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
@@ -20,7 +19,7 @@ class MySalary extends Page implements HasTable
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
 
-    protected static string|View|null $view = 'filament.pages.my-salary';
+    protected string $view = 'filament.pages.my-salary';
 
     protected static string|UnitEnum|null $navigationGroup = 'My Portal';
 
