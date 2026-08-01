@@ -1,0 +1,236 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config '../../../../tailwind.config.js';
+
+/* ============================================
+   BOTBLE CMS - ALL FIXES
+   ============================================ */
+
+/* SIDEBAR - Dark with proper colors */
+.fi-sidebar,
+.fi-sidebar-nav,
+nav[aria-label*="sidebar"] {
+    background-color: #1f2937 !important;
+}
+
+/* All sidebar text gray by default */
+.fi-sidebar *,
+.fi-sidebar a,
+.fi-sidebar button,
+.fi-sidebar span {
+    color: #9ca3af !important;
+}
+
+/* Sidebar items */
+.fi-sidebar-item a,
+.fi-sidebar-item button {
+    border-radius: 0.375rem !important;
+    padding: 0.625rem 0.875rem !important;
+    transition: all 0.15s !important;
+}
+
+.fi-sidebar-item a:hover,
+.fi-sidebar-item button:hover {
+    background-color: #374151 !important;
+    color: #fff !important;
+}
+
+/* ACTIVE MENU - BLUE BG WITH WHITE TEXT */
+.fi-sidebar-item-active,
+.fi-sidebar-item-active *,
+.fi-active,
+.fi-active *,
+[aria-current="page"],
+[aria-current="page"] * {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+/* Chevron icons - MAKE VISIBLE */
+.fi-sidebar svg,
+.fi-sidebar-item svg,
+button[x-on\\:click] svg,
+[x-data*="group"] svg {
+    display: inline-block !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    color: inherit !important;
+    opacity: 1 !important;
+}
+
+/* Group labels */
+.fi-sidebar-group-label {
+    color: #6b7280 !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    padding: 0.75rem 0.875rem !important;
+}
+
+/* Brand */
+.fi-logo,
+.fi-sidebar-header * {
+    color: #fff !important;
+}
+
+/* TABLES - WHITE HEADER */
+.fi-ta,
+table {
+    background-color: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.5rem !important;
+}
+
+/* Table header - WHITE not gray */
+.fi-ta-header,
+table thead {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Table header cells */
+thead th {
+    background-color: #f9fafb !important;
+    color: #6b7280 !important;
+    font-size: 0.8125rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    padding: 0.75rem 1.5rem !important;
+}
+
+/* Table rows */
+tbody tr {
+    background-color: #fff !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+}
+
+tbody tr:hover {
+    background-color: #f9fafb !important;
+}
+
+tbody td {
+    padding: 0.875rem 1.5rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* ACTION BUTTONS - HORIZONTAL NOT VERTICAL */
+.fi-ta-actions,
+td .fi-ta-actions,
+tbody td > div {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+/* Individual action buttons */
+.fi-ta-actions button,
+tbody td button {
+    width: 2rem !important;
+    height: 2rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0.375rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Edit button - BLUE */
+button[title*="Edit"],
+.fi-ac-btn-action:first-child {
+    background-color: #3b82f6 !important;
+    border: 1px solid #2563eb !important;
+    color: #fff !important;
+}
+
+/* Delete button - RED */
+button[title*="Delete"],
+.fi-ac-btn-action:last-child {
+    background-color: #ef4444 !important;
+    border: 1px solid #dc2626 !important;
+    color: #fff !important;
+}
+
+/* BADGES - SOLID COLORS */
+.fi-badge {
+    padding: 0.25rem 0.625rem !important;
+    border-radius: 0.25rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    color: #fff !important;
+}
+
+/* Badge colors */
+[class*="success"] {
+    background-color: #10b981 !important;
+}
+
+[class*="danger"] {
+    background-color: #ef4444 !important;
+}
+
+[class*="warning"] {
+    background-color: #f59e0b !important;
+}
+
+[class*="info"] {
+    background-color: #3b82f6 !important;
+}
+
+/* FORMS - FULL WIDTH */
+.fi-fo,
+.fi-form,
+form {
+    max-width: 100% !important;
+}
+
+.fi-fo-section {
+    background-color: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 0.5rem !important;
+    padding: 1.5rem !important;
+}
+
+/* Input fields */
+input,
+select,
+textarea {
+    width: 100% !important;
+    padding: 0.5rem 0.75rem !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.375rem !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Toggle */
+input[type="checkbox"][role="switch"] {
+    width: 2.75rem !important;
+    height: 1.5rem !important;
+    background-color: #d1d5db !important;
+    border-radius: 9999px !important;
+    appearance: none !important;
+}
+
+input[type="checkbox"][role="switch"]:checked {
+    background-color: #3b82f6 !important;
+}
+
+/* Buttons */
+button[type="submit"] {
+    background-color: #3b82f6 !important;
+    color: #fff !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.375rem !important;
+}
+
+button[type="submit"]:hover {
+    background-color: #2563eb !important;
+}
