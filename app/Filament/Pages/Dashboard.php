@@ -19,24 +19,24 @@ class Dashboard extends BaseDashboard
 
         if ($user->isAdmin()) {
             return [
-                'totalStaff' => User::where('role', 'staff')->count(),
-                'activeStaff' => User::where('role', 'staff')->where('is_active', true)->count(),
-                'totalDepartments' => Department::where('is_active', true)->count(),
-                'activeProjects' => Project::where('status', 'active')->count(),
-                'pendingTasks' => Task::where('status', 'pending')->count(),
-                'inProgressTasks' => Task::where('status', 'in_progress')->count(),
-                'completedTasks' => Task::where('status', 'completed')->count(),
-                'todayAttendance' => Attendance::where('date', today())->where('status', 'present')->count(),
+                'totalStaff'        => User::where('role', 'staff')->count(),
+                'activeStaff'       => User::where('role', 'staff')->where('is_active', true)->count(),
+                'totalDepartments'  => Department::where('is_active', true)->count(),
+                'activeProjects'    => Project::where('status', 'active')->count(),
+                'pendingTasks'      => Task::where('status', 'pending')->count(),
+                'inProgressTasks'   => Task::where('status', 'in_progress')->count(),
+                'completedTasks'    => Task::where('status', 'completed')->count(),
+                'todayAttendance'   => Attendance::where('date', today())->where('status', 'present')->count(),
                 'monthlySalaryCost' => User::where('role', 'staff')
                     ->with('currentSalary')
                     ->get()
                     ->sum(fn($user) => $user->currentSalary?->amount ?? 0),
-                'recentProjects' => Project::with('users')->latest()->limit(5)->get(),
-                'recentTasks' => Task::with(['user', 'project'])->latest()->limit(8)->get(),
-                'recentActivity' => $this->getRecentActivity(),
-                'projectsByStatus' => Project::selectRaw('status, COUNT(*) as count')->groupBy('status')->get(),
-                'tasksByStatus' => Task::selectRaw('status, COUNT(*) as count')->groupBy('status')->get(),
-                'attendanceStats' => $this->getAttendanceStats(),
+                'recentProjects'    => Project::with('users')->latest()->limit(5)->get(),
+                'recentTasks'       => Task::with(['user', 'project'])->latest()->limit(8)->get(),
+                'recentActivity'    => $this->getRecentActivity(),
+                'projectsByStatus'  => Project::selectRaw('status, COUNT(*) as count')->groupBy('status')->get(),
+                'tasksByStatus'     => Task::selectRaw('status, COUNT(*) as count')->groupBy('status')->get(),
+                'attendanceStats'   => $this->getAttendanceStats(),
             ];
         }
 

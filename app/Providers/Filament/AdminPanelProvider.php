@@ -30,17 +30,18 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('Staff Portal')
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::Blue,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
                 'danger' => Color::Rose,
                 'info' => Color::Sky,
                 'gray' => Color::Slate,
             ])
-            ->font('Inter')
+            ->font('Inter', provider: \Filament\FontProviders\GoogleFontProvider::class)
             ->darkMode(false)
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('17rem')
             ->topNavigation(false)
             ->navigationGroups([
                 'Staff',
