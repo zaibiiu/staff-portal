@@ -10,6 +10,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -17,6 +18,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -30,8 +32,11 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile()
             ->brandName('Staff Portal')
+            ->brandLogo(fn () => view('filament.components.brand-logo'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('favicon.ico'))
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::Amber,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
                 'danger' => Color::Rose,
@@ -43,11 +48,22 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('17rem')
+            ->collapsedSidebarWidth('4.5rem')
             ->topNavigation(false)
             ->navigationGroups([
                 'Staff',
                 'Project Management',
                 'My Portal',
+            ])
+            ->userMenuItems([
+                'profile' => \Filament\Navigation\MenuItem::make()
+                    ->label('My Profile')
+                    ->url(fn () => \App\Filament\Pages\MyProfile::getUrl())
+                    ->icon('heroicon-o-user-circle'),
+                'settings' => \Filament\Navigation\MenuItem::make()
+                    ->label('Account Settings')
+                    ->url(fn () => \App\Filament\Pages\MyProfile::getUrl())
+                    ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -70,6 +86,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                PanelsRenderHook::SIDEBAR_NAV_START,
+                fn () => view('filament.components.sidebar-user-profile')
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn () => \Illuminate\Support\Facades\Blade::render('@vite("resources/js/sidebar-collapse.js")')
+            );
     }
 }
