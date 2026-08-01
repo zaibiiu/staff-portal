@@ -93,14 +93,9 @@ body,
     padding: 0 !important;
 }
 
-/* ---- Brand / Logo area ---- */
+/* ---- Brand / Logo area — HIDDEN, user profile card replaces it ---- */
 .fi-sidebar-header {
-    background-color: var(--sp-sidebar-darker) !important;
-    padding: 1.5rem 1.25rem !important;
-    border-bottom: 1px solid var(--sp-sidebar-border) !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.875rem !important;
+    display: none !important;
 }
 
 .fi-logo {
@@ -136,7 +131,99 @@ body,
     letter-spacing: 0.07em !important;
 }
 
-/* ---- Group section labels (MAIN, BENEFITS…) ---- */
+/* ---- Sidebar User Profile Card (replaces plain brand name) ---- */
+/* Hide the plain text brand name in sidebar — we show the profile card instead */
+.fi-sidebar-header .fi-logo-text {
+    display: none !important;
+}
+
+/* User profile card injected via CSS after the logo header */
+.fi-sidebar-nav > div:first-child {
+    border-bottom: 1px solid var(--sp-sidebar-border);
+}
+
+/* Sidebar user panel — style the Filament built-in user button as a profile card */
+.fi-sidebar-user-btn,
+.fi-user-panel,
+.fi-sidebar-user {
+    background: rgba(255,255,255,0.05) !important;
+    border-radius: 0.75rem !important;
+    margin: 0.75rem !important;
+    padding: 1rem !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    cursor: pointer !important;
+    transition: background var(--sp-transition) !important;
+    text-align: center !important;
+}
+
+.fi-sidebar-user-btn:hover {
+    background: rgba(255,255,255,0.09) !important;
+}
+
+/* Avatar — make it big and centered like the demo */
+.fi-sidebar-user-btn .fi-avatar,
+.fi-user-panel .fi-avatar,
+.fi-sidebar-user .fi-avatar {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, var(--sp-amber) 0%, var(--sp-amber-dark) 100%) !important;
+    color: #ffffff !important;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    border: 3px solid rgba(255,255,255,0.15) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+    margin-bottom: 0.25rem !important;
+}
+
+/* User name */
+.fi-sidebar-user-btn .fi-user-name,
+.fi-user-panel .fi-user-name {
+    color: #ffffff !important;
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+    margin-top: 0.125rem !important;
+}
+
+/* User email */
+.fi-sidebar-user-btn .fi-user-email,
+.fi-user-panel .fi-user-email {
+    color: rgba(255,255,255,0.55) !important;
+    font-size: 0.75rem !important;
+    margin-top: 0 !important;
+}
+
+/* Role badge below email — shown as a small pill */
+.fi-sidebar-user-btn::after,
+.fi-user-panel::after {
+    content: 'Staff Member';
+    margin-top: 0.5rem !important;
+    background: rgba(245,158,11,0.18) !important;
+    border: 1px solid rgba(245,158,11,0.45) !important;
+    color: var(--sp-amber) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    padding: 0.2rem 0.75rem !important;
+    border-radius: 9999px !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+}
+
+/* Chevron for sidebar user */
+.fi-sidebar-user-btn > svg:last-child,
+.fi-user-panel > svg:last-child {
+    display: none !important;
+}
+
+/* ---- Group section labels ---- */
 .fi-sidebar-group-label,
 [class*="fi-sidebar"] [class*="group-label"] {
     color: var(--sp-sidebar-muted) !important;
@@ -144,12 +231,12 @@ body,
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.09em !important;
-    padding: 1.5rem 1.5rem 0.5rem !important;
+    padding: 0.875rem 1.5rem 0.375rem !important;
 }
 
 /* ---- Navigation items ---- */
 .fi-sidebar-item {
-    padding: 0.2rem 0.875rem !important;
+    padding: 0.15rem 0.875rem !important;
 }
 
 .fi-sidebar-item-btn,
@@ -330,6 +417,35 @@ h1.fi-heading {
     gap: 0.75rem !important;
 }
 
+/* ============================================================
+   BREADCRUMB / PAGE HEADER — Remove card background
+   ============================================================ */
+/* Remove white card box from breadcrumb/page title area */
+.fi-breadcrumbs,
+.fi-page-header,
+.fi-header-breadcrumbs,
+[class*="fi-page"] > [class*="header"],
+.fi-page > header,
+.fi-page-header-ctn,
+.page-header-wrapper {
+    background-color: transparent !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Specifically remove the white card that wraps the breadcrumb text */
+.fi-page-heading,
+.fi-page-sub-navigation {
+    background-color: transparent !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
 /* Notification bell */
 .fi-topbar-notification-trigger {
     width: 2.5rem !important;
@@ -456,6 +572,19 @@ button.fi-btn {
     letter-spacing: 0.01em !important;
     cursor: pointer !important;
     border: 1.5px solid transparent !important;
+    white-space: nowrap !important;   /* prevent text wrapping in buttons */
+    min-width: max-content !important;
+    line-height: 1.4 !important;
+}
+
+/* Page header create/new button — make it look premium and inline */
+.fi-page-header .fi-btn,
+.fi-header-actions .fi-btn,
+.fi-page-header-actions .fi-btn {
+    padding: 0.625rem 1.5rem !important;
+    font-size: 0.9375rem !important;
+    white-space: nowrap !important;
+    border-radius: var(--sp-radius) !important;
 }
 
 .fi-btn-color-primary,
@@ -618,50 +747,62 @@ tbody td,
     color: var(--sp-heading) !important;
 }
 
-/* Table action buttons (Edit/Delete icons) */
+/* Table action buttons — text link style */
 .fi-ta-actions {
     display: flex !important;
     align-items: center !important;
-    gap: 0.5rem !important;
+    gap: 0.25rem !important;
 }
 
-.fi-ac-btn-action {
-    width: 2.125rem !important;
-    height: 2.125rem !important;
+/* All table row action buttons as flat text links */
+.fi-ta-actions .fi-btn,
+.fi-ta-actions .fi-ac-btn-action {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0.3125rem 0.625rem !important;
     border-radius: var(--sp-radius-sm) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all var(--sp-transition) !important;
-    border: 1px solid transparent !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: auto !important;
+    line-height: 1.4 !important;
 }
 
-/* Edit icon button */
-.fi-ac-btn-action[title*="Edit"],
-.fi-ac-btn-action svg[data-icon*="pencil"] {
-    background-color: #dbeafe !important;
+/* Edit — blue */
+.fi-ta-actions .fi-btn-color-gray,
+.fi-ta-actions .fi-btn:not([class*="danger"]) {
     color: var(--sp-blue) !important;
-    border-color: #bfdbfe !important;
+}
+.fi-ta-actions .fi-btn-color-gray svg,
+.fi-ta-actions .fi-btn:not([class*="danger"]) svg {
+    color: var(--sp-blue) !important;
+}
+.fi-ta-actions .fi-btn-color-gray:hover {
+    background-color: #eff6ff !important;
+    transform: none !important;
 }
 
-.fi-ac-btn-action[title*="Edit"]:hover {
-    background-color: var(--sp-blue) !important;
-    color: #ffffff !important;
-    border-color: var(--sp-blue) !important;
-}
-
-/* Delete icon button */
+/* Delete — red text + icon */
+.fi-ta-actions .fi-btn-color-danger,
+.fi-ta-actions [class*="danger"],
 .fi-ac-btn-action[title*="Delete"],
-.fi-ac-btn-action svg[data-icon*="trash"] {
-    background-color: #fee2e2 !important;
+.fi-ac-btn-action[title*="delete"] {
     color: var(--sp-red) !important;
-    border-color: #fecaca !important;
+    background: transparent !important;
+    border: none !important;
 }
-
-.fi-ac-btn-action[title*="Delete"]:hover {
-    background-color: var(--sp-red) !important;
-    color: #ffffff !important;
-    border-color: var(--sp-red) !important;
+.fi-ta-actions .fi-btn-color-danger svg,
+.fi-ta-actions [class*="danger"] svg,
+.fi-ac-btn-action[title*="Delete"] svg {
+    color: var(--sp-red) !important;
+}
+.fi-ta-actions .fi-btn-color-danger:hover,
+.fi-ta-actions [class*="danger"]:hover {
+    background-color: #fee2e2 !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 /* ============================================================
@@ -799,28 +940,56 @@ label.fi-label {
 }
 
 /* ============================================================
-   SEARCH BAR
+   SEARCH BAR — Icon inside input border
    ============================================================ */
 .fi-ta-search-field {
     position: relative !important;
 }
 
-.fi-ta-search-field input {
-    padding-left: 2.75rem !important;
-    border-radius: var(--sp-radius) !important;
+/* Border lives on the WRAPPER so the absolute icon stays inside */
+.fi-ta-search-field .fi-input-wrp,
+.fi-ta-search-field > div:first-child {
     border: 1.5px solid var(--sp-border) !important;
+    border-radius: var(--sp-radius) !important;
     background-color: var(--sp-surface) !important;
     transition: all var(--sp-transition) !important;
-    font-size: 0.9375rem !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
-.fi-ta-search-field input:focus {
+/* Focus ring on wrapper */
+.fi-ta-search-field:focus-within .fi-input-wrp,
+.fi-ta-search-field:focus-within > div:first-child {
     border-color: var(--sp-blue) !important;
     box-shadow: 0 0 0 4px rgba(59,130,246,0.12) !important;
 }
 
+/* Input itself: no border (wrapper provides it) */
+.fi-ta-search-field input {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-left: 2.5rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    font-size: 0.9375rem !important;
+    flex: 1 !important;
+    outline: none !important;
+    appearance: none !important;
+    width: 100% !important;
+}
+
 .fi-ta-search-field svg {
     color: var(--sp-placeholder) !important;
+    flex-shrink: 0 !important;
+}
+
+/* Other table header input wrappers */
+.fi-ta-header .fi-fo-field-wrp {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 /* Filter button */
@@ -836,6 +1005,47 @@ label.fi-label {
 .fi-ta-filter-trigger-action:hover {
     background-color: var(--sp-bg) !important;
     border-color: #cbd5e1 !important;
+}
+
+/* ============================================================
+   PAGINATION PER-PAGE SELECT — Single chevron
+   ============================================================ */
+.fi-pagination select,
+.fi-ta-pagination select,
+[class*="per-page"] select,
+.fi-pagination [class*="records-per-page"] select {
+    border: 1.5px solid var(--sp-border) !important;
+    border-radius: var(--sp-radius-sm) !important;
+    background-color: var(--sp-surface) !important;
+    color: var(--sp-body) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem !important;
+    /* Custom arrow only — removes native browser double arrow */
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.5rem center !important;
+    background-size: 1rem !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+}
+
+/* Hide any extra SVG chevron rendered next to the select */
+.fi-pagination svg,
+.fi-ta-pagination svg {
+    display: none !important;
+}
+
+/* Remove wrapper borders */
+.fi-pagination .fi-input-wrp,
+.fi-ta-pagination .fi-input-wrp,
+.fi-pagination [class*="input-wrapper"] {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
 }
 
 /* ============================================================
@@ -1288,3 +1498,62 @@ a.fi-link:hover,
         margin: 0 !important;
     }
 }
+
+/* ============================================================
+   CREATE & EDIT PAGES — Full Width Form
+   ============================================================ */
+/* Override the grid that leaves empty right space */
+.fi-page-content > div,
+.fi-create-record-page .fi-page-content > div,
+.fi-edit-record-page .fi-page-content > div {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+}
+
+/* Form full width */
+.fi-page form {
+    width: 100% !important;
+}
+
+/* Form section cards span full width */
+.fi-page .fi-fo-section,
+.fi-fo-component-ctn > .fi-section,
+.fi-page .fi-section:not(.fi-ta-ctn) {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+}
+
+/* Actions bar at bottom full width */
+.fi-page .fi-fo-actions {
+    width: 100% !important;
+}
+
+/* ============================================================
+   TABLE DELETE OVERRIDE — Ensure red wins over global danger
+   ============================================================ */
+/* These rules are deliberately AFTER the global danger button styles
+   so they override with higher specificity */
+.fi-ta-actions .fi-btn-color-danger,
+.fi-ta-actions .fi-btn[class*="danger"],
+.fi-ta-actions button[class*="danger"] {
+    background: transparent !important;
+    background-image: none !important;
+    color: #ef4444 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.fi-ta-actions .fi-btn-color-danger svg,
+.fi-ta-actions .fi-btn[class*="danger"] svg,
+.fi-ta-actions button[class*="danger"] svg {
+    color: #ef4444 !important;
+}
+
+.fi-ta-actions .fi-btn-color-danger:hover,
+.fi-ta-actions .fi-btn[class*="danger"]:hover {
+    background-color: #fee2e2 !important;
+    transform: none !important;
+}
+
