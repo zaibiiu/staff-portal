@@ -1,0 +1,136 @@
+/* ============================================================
+   SIDEBAR COLLAPSE — Filament v3
+   Filament toggles `.fi-sidebar-open` on the <aside> element.
+   Collapsed = fi-sidebar-open is ABSENT on desktop.
+
+   CRITICAL RULE: Never set a fixed width on any sidebar child
+   element — that prevents the sidebar from shrinking.
+   All widths on children must be relative (%, 100%) or unset.
+   ============================================================ */
+
+/* ---- Sidebar: smooth transition only — NO hardcoded width ---- */
+.fi-sidebar {
+    transition: width 0.3s ease, min-width 0.3s ease, max-width 0.3s ease !important;
+    overflow: hidden !important;   /* prevents children from stretching sidebar */
+}
+
+/* ---- Sidebar nav: fill available width ---- */
+.fi-sidebar-nav {
+    width: 100% !important;
+    overflow: hidden !important;
+}
+
+/* ============================================================
+   COLLAPSED STATE — Desktop only
+   ============================================================ */
+@media (min-width: 1024px) {
+
+    /* ---- Profile section: compact to avatar-only row ---- */
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-profile-section {
+        padding: 0.5rem 0.25rem !important;
+        margin-bottom: 0.25rem !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+        align-items: center !important;
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* Shrink avatar */
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-avatar {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        font-size: 0.875rem !important;
+    }
+
+    /* Remove avatar wrap margin */
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-profile-avatar-wrap {
+        margin-bottom: 0 !important;
+    }
+
+    /* Hide all text/badge elements — CRITICAL for width collapse */
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-user-name,
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-user-email,
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-role-wrap,
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-role-badge {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+    }
+
+    /* ---- Filament built-in user panel (if enabled) ---- */
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-user,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-user-panel,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-user-btn {
+        padding: 0.5rem 0.25rem !important;
+        margin: 0.25rem !important;
+        gap: 0 !important;
+        flex-direction: column !important;
+        min-height: unset !important;
+        height: auto !important;
+        overflow: hidden !important;
+        width: calc(100% - 0.5rem) !important;
+    }
+
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-user .fi-avatar,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-user-panel .fi-avatar,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-user-btn .fi-avatar {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        font-size: 0.875rem !important;
+        margin: 0 auto !important;
+    }
+
+    .fi-sidebar:not(.fi-sidebar-open) .fi-user-name,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-user-email,
+    .fi-sidebar:not(.fi-sidebar-open) .sidebar-user-text,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-user-btn::after,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-user-panel::after,
+    .fi-sidebar:not(.fi-sidebar-open) [class*="fi-user-name"],
+    .fi-sidebar:not(.fi-sidebar-open) [class*="fi-user-email"] {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* ---- Menu item labels: hide when collapsed ---- */
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item-label {
+        display: none !important;
+        width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* ---- Group section labels: hide when collapsed ---- */
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-group-label {
+        display: none !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* ---- Nav item buttons: center icons when collapsed ---- */
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item-btn,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item a,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item button {
+        justify-content: center !important;
+        padding: 0.65rem 0.5rem !important;
+        gap: 0 !important;
+    }
+
+    /* ---- Sidebar item: no horizontal padding when collapsed ---- */
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item {
+        padding: 0 0.25rem !important;
+    }
+
+    /* ---- Group margin: minimal when collapsed ---- */
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-group {
+        margin-bottom: 0 !important;
+    }
+}

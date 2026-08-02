@@ -4,9 +4,21 @@
 
 /* ============================================================
    STAFF PORTAL — PREMIUM THEME
-   Inspired by: Gujjar Education Member Portal Design
+   Inspired by: Gujlar Education Member Portal Design
    Palette: Navy #1e2d5a | Blue #3b82f6 | Amber #f59e0b
    ============================================================ */
+
+/* ============================================================
+   ORGANIZED CSS IMPORTS
+   Each section in its own file for easy maintenance
+   ============================================================ */
+@import './partials/variables.css';
+@import './partials/base.css';
+@import './partials/sidebar.css';
+@import './partials/sidebar-profile.css';
+@import './partials/sidebar-collapse.css';
+@import './partials/topbar.css';
+@import './partials/buttons.css';
 
 /* ============================================================
    CSS CUSTOM PROPERTIES
@@ -83,8 +95,11 @@ body,
     background-color: var(--sp-sidebar-bg) !important;
     border-right: none !important;
     box-shadow: 2px 0 16px rgba(15, 23, 42, 0.18) !important;
-    width: 17rem !important;
-    transition: width 0.3s ease !important;
+    /* DO NOT set width here — Filament controls it via
+       --sidebar-width (17rem) and --collapsed-sidebar-width (4.5rem)
+       set in AdminPanelProvider. !important here would break collapse. */
+    transition: width 0.3s ease, min-width 0.3s ease !important;
+    overflow: hidden !important;
 }
 
 /* Sidebar nav inner - REMOVE ALL SPACING */
@@ -146,91 +161,10 @@ body,
     display: none !important;
 }
 
-/* User profile card injected via CSS after the logo header */
-.fi-sidebar-nav > div:first-child {
-    border-bottom: 1px solid var(--sp-sidebar-border);
-}
+/* Profile section layout is handled by sidebar-profile.css (custom blade component).
+   The .sidebar-profile-section, .sidebar-avatar, .sidebar-user-name etc. classes
+   are all defined there. Collapsed state overrides are in sidebar-collapse.css. */
 
-/* Sidebar user panel — style the Filament built-in user button as a profile card */
-.fi-sidebar-user-btn,
-.fi-user-panel,
-.fi-sidebar-user {
-    background: rgba(255,255,255,0.05) !important;
-    border-radius: 0.75rem !important;
-    margin: 0.75rem !important;
-    padding: 1rem !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    cursor: pointer !important;
-    transition: background var(--sp-transition) !important;
-    text-align: center !important;
-}
-
-.fi-sidebar-user-btn:hover {
-    background: rgba(255,255,255,0.09) !important;
-}
-
-/* Avatar — make it big and centered like the demo */
-.fi-sidebar-user-btn .fi-avatar,
-.fi-user-panel .fi-avatar,
-.fi-sidebar-user .fi-avatar {
-    width: 3.5rem !important;
-    height: 3.5rem !important;
-    border-radius: 50% !important;
-    background: linear-gradient(135deg, var(--sp-amber) 0%, var(--sp-amber-dark) 100%) !important;
-    color: #ffffff !important;
-    font-size: 1.25rem !important;
-    font-weight: 700 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-    border: 3px solid rgba(255,255,255,0.15) !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
-    margin-bottom: 0.25rem !important;
-}
-
-/* User name */
-.fi-sidebar-user-btn .fi-user-name,
-.fi-user-panel .fi-user-name {
-    color: #ffffff !important;
-    font-size: 0.9375rem !important;
-    font-weight: 700 !important;
-    margin-top: 0.125rem !important;
-}
-
-/* User email */
-.fi-sidebar-user-btn .fi-user-email,
-.fi-user-panel .fi-user-email {
-    color: rgba(255,255,255,0.55) !important;
-    font-size: 0.75rem !important;
-    margin-top: 0 !important;
-}
-
-/* Role badge below email — shown as a small pill */
-.fi-sidebar-user-btn::after,
-.fi-user-panel::after {
-    content: 'Staff Member';
-    margin-top: 0.5rem !important;
-    background: rgba(245,158,11,0.18) !important;
-    border: 1px solid rgba(245,158,11,0.45) !important;
-    color: var(--sp-amber) !important;
-    font-size: 0.7rem !important;
-    font-weight: 700 !important;
-    padding: 0.2rem 0.75rem !important;
-    border-radius: 9999px !important;
-    letter-spacing: 0.06em !important;
-    text-transform: uppercase !important;
-}
-
-/* Chevron for sidebar user */
-.fi-sidebar-user-btn > svg:last-child,
-.fi-user-panel > svg:last-child {
-    display: none !important;
-}
 
 /* ---- Group section labels ---- */
 .fi-sidebar-group-label,
@@ -1701,104 +1635,18 @@ button[aria-label*="User menu"]:hover {
 }
 
 /* ============================================
-   SIDEBAR COLLAPSIBLE - FORCE WIDTH CHANGES
+   SIDEBAR BACKGROUND — no width override here
+   (Filament controls width via CSS variables)
    ============================================ */
 
-/* Override Filament's default sidebar width - expanded state */
-.fi-sidebar,
+/* Ensure sidebar background stays correct when collapsed */
 aside.fi-sidebar,
-aside[class*="sidebar"],
-[x-data*="sidebar"],
 nav.fi-sidebar {
-    width: 17rem !important;
-    min-width: 17rem !important;
-    max-width: 17rem !important;
-    transition: width 0.3s ease, min-width 0.3s ease, max-width 0.3s ease !important;
+    background-color: var(--sp-sidebar-bg) !important;
     overflow-x: hidden !important;
 }
 
-/* FORCE collapsed state width - CRITICAL */
-aside.fi-sidebar[style*="17rem"],
-aside[style*="17rem"],
-.fi-sidebar[style*="17rem"] {
-    width: 17rem !important;
-}
-
-/* When Filament tries to collapse, FORCE the width */
-aside.fi-sidebar[style*="4"],
-aside.fi-sidebar[style*="5"],
-aside.fi-sidebar[style*="6"],
-aside.fi-sidebar[style*="72px"],
-aside.fi-sidebar[style*="80px"],
-.fi-sidebar.fi-sidebar-collapsed,
-aside[data-collapsed],
-aside[aria-expanded="false"] {
-    width: 4.5rem !important;
-    min-width: 4.5rem !important;
-    max-width: 4.5rem !important;
-}
-
-/* Hide profile text when collapsed */
-aside.fi-sidebar[style*="4"] .sidebar-user-text,
-aside.fi-sidebar[style*="5"] .sidebar-user-text,
-aside.fi-sidebar[style*="6"] .sidebar-user-text,
-aside.fi-sidebar[style*="72px"] .sidebar-user-text,
-aside.fi-sidebar[style*="80px"] .sidebar-user-text,
-.fi-sidebar.fi-sidebar-collapsed .sidebar-user-text,
-aside[data-collapsed] .sidebar-user-text,
-aside[aria-expanded="false"] .sidebar-user-text {
-    display: none !important;
-    opacity: 0 !important;
-}
-
-/* Smaller avatar when collapsed */
-aside.fi-sidebar[style*="4"] .sidebar-avatar,
-aside.fi-sidebar[style*="5"] .sidebar-avatar,
-aside.fi-sidebar[style*="6"] .sidebar-avatar,
-aside.fi-sidebar[style*="72px"] .sidebar-avatar,
-aside.fi-sidebar[style*="80px"] .sidebar-avatar,
-.fi-sidebar.fi-sidebar-collapsed .sidebar-avatar,
-aside[data-collapsed] .sidebar-avatar,
-aside[aria-expanded="false"] .sidebar-avatar {
-    width: 3rem !important;
-    height: 3rem !important;
-    font-size: 1.25rem !important;
-}
-
-/* Hide text when sidebar has small width */
-aside.fi-sidebar[style*="4"] .fi-sidebar-item-label,
-aside.fi-sidebar[style*="5"] .fi-sidebar-item-label,
-aside.fi-sidebar[style*="6"] .fi-sidebar-item-label,
-aside.fi-sidebar[style*="72px"] .fi-sidebar-item-label,
-aside.fi-sidebar[style*="80px"] .fi-sidebar-item-label,
-.fi-sidebar.fi-sidebar-collapsed .fi-sidebar-item-label,
-aside[data-collapsed] .fi-sidebar-item-label,
-aside[aria-expanded="false"] .fi-sidebar-item-label {
-    display: none !important;
-}
-
-/* Hide group labels when collapsed */
-aside.fi-sidebar[style*="4"] .fi-sidebar-group-label,
-aside.fi-sidebar[style*="5"] .fi-sidebar-group-label,
-aside.fi-sidebar[style*="6"] .fi-sidebar-group-label,
-.fi-sidebar.fi-sidebar-collapsed .fi-sidebar-group-label,
-aside[data-collapsed] .fi-sidebar-group-label,
-aside[aria-expanded="false"] .fi-sidebar-group-label {
-    display: none !important;
-}
-
-/* Center icons when collapsed */
-aside.fi-sidebar[style*="4"] .fi-sidebar-item-btn,
-aside.fi-sidebar[style*="5"] .fi-sidebar-item-btn,
-aside.fi-sidebar[style*="6"] .fi-sidebar-item-btn,
-.fi-sidebar.fi-sidebar-collapsed .fi-sidebar-item-btn,
-aside[data-collapsed] .fi-sidebar-item-btn,
-aside[aria-expanded="false"] .fi-sidebar-item-btn {
-    justify-content: center !important;
-    padding: 0.65rem 0.5rem !important;
-}
-
-/* Fix profile section bg - should match sidebar */
+/* Fix profile section bg */
 .fi-sidebar-user,
 .fi-user-panel {
     background: transparent !important;

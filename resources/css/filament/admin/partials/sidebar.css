@@ -1,0 +1,140 @@
+/* ============================================================
+   SIDEBAR - Navy Premium
+   ============================================================ */
+.fi-sidebar {
+    background-color: var(--sp-sidebar-bg) !important;
+    border-right: none !important;
+    box-shadow: 2px 0 16px rgba(15, 23, 42, 0.18) !important;
+    /* DO NOT hardcode width — Filament controls it via --sidebar-width CSS var.
+       Hardcoding breaks the collapse toggle. */
+    transition: width 0.3s ease, min-width 0.3s ease !important;
+    overflow: hidden !important;
+}
+
+/* Sidebar nav inner - REMOVE ALL SPACING */
+.fi-sidebar-nav {
+    background-color: var(--sp-sidebar-bg) !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+}
+
+/* FORCE remove Filament default spacing */
+.fi-sidebar-nav > * {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ---- Brand / Logo area — HIDDEN ---- */
+.fi-sidebar-header {
+    display: none !important;
+}
+
+/* ---- Group section labels ---- */
+.fi-sidebar-group-label,
+[class*="fi-sidebar"] [class*="group-label"] {
+    color: var(--sp-sidebar-muted) !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.09em !important;
+    padding: 0.5rem 1.25rem 0.3rem !important;
+    margin: 0 !important;
+}
+
+/* ---- Navigation items ---- */
+.fi-sidebar-item {
+    padding: 0 0.875rem !important;
+    margin: 0 !important;
+    row-gap: 0 !important;
+    gap: 0 !important;
+}
+
+/* Remove Filament's default row-gap */
+.fi-sidebar-group {
+    row-gap: 0 !important;
+    gap: 0 !important;
+    margin: 0 0 0.3rem 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.fi-sidebar-item-btn,
+.fi-sidebar-item a,
+.fi-sidebar-item button {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.8125rem !important;
+    padding: 0.65rem 1rem !important;
+    margin: 0.1rem 0 !important;
+    border-radius: var(--sp-radius-sm) !important;
+    font-size: 0.9375rem !important;
+    font-weight: 500 !important;
+    color: var(--sp-sidebar-text) !important;
+    transition: background var(--sp-transition), color var(--sp-transition), transform var(--sp-transition) !important;
+    text-decoration: none !important;
+    min-height: auto !important;
+    height: auto !important;
+}
+
+.fi-sidebar-item-btn:hover,
+.fi-sidebar-item a:hover,
+.fi-sidebar-item button:hover {
+    background-color: var(--sp-sidebar-hover) !important;
+    color: #ffffff !important;
+    transform: translateX(3px) !important;
+}
+
+.fi-sidebar-item-btn:hover *,
+.fi-sidebar-item a:hover *,
+.fi-sidebar-item button:hover * {
+    color: #ffffff !important;
+}
+
+/* ACTIVE state */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+.fi-sidebar-item.fi-active > a,
+.fi-sidebar-item[aria-current="page"] > .fi-sidebar-item-btn,
+.fi-sidebar-item[aria-current="page"] > a,
+a[aria-current="page"] {
+    background-color: var(--sp-sidebar-active) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4) !important;
+    transform: none !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-label,
+.fi-sidebar-item[aria-current="page"] .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active *,
+.fi-sidebar-item[aria-current="page"] * {
+    color: #ffffff !important;
+}
+
+/* Active icon */
+.fi-sidebar-item.fi-active svg,
+.fi-sidebar-item[aria-current="page"] svg {
+    color: #ffffff !important;
+}
+
+/* Sidebar icons */
+.fi-sidebar-item svg {
+    width: 1.3125rem !important;
+    height: 1.3125rem !important;
+    flex-shrink: 0 !important;
+    color: var(--sp-sidebar-text) !important;
+}
+
+/* Sidebar badge */
+.fi-sidebar-item .fi-badge,
+.fi-sidebar-item-badge {
+    background: linear-gradient(135deg, var(--sp-amber) 0%, var(--sp-amber-dark) 100%) !important;
+    color: #ffffff !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    padding: 0.2rem 0.5rem !important;
+    border-radius: 9999px !important;
+    min-width: 1.35rem !important;
+    text-align: center !important;
+}

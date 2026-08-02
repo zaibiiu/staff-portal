@@ -1,97 +1,62 @@
 /**
- * Sidebar Collapse Handler for Filament v5
- * AGGRESSIVE approach - Forces proper width changes
+ * Sidebar Collapse Handler for Filament v3
+ *
+ * Filament v3 uses CSS variables --sidebar-width / --collapsed-sidebar-width
+ * set on <html> or the sidebar itself, and toggles `.fi-sidebar-open` on
+ * the <aside> element.
+ *
+ * Collapsed = `.fi-sidebar-open` is ABSENT on desktop.
+ * Expanded  = `.fi-sidebar-open` IS present.
+ *
+ * We do NOT force inline widths — we let Filament's own CSS vars do the work.
+ * We only watch for state changes and update a helper class for our CSS overrides.
  */
+(function () {
+    'use strict';
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 Sidebar collapse script loaded');
-    
-    // Find the sidebar element - try multiple selectors
-    const sidebar = document.querySelector('aside.fi-sidebar') || 
-                   document.querySelector('aside[class*="sidebar"]') || 
-                   document.querySelector('nav.fi-sidebar') ||
-                   document.querySelector('[data-sidebar]');
-    
-    if (!sidebar) {
-        console.warn('❌ Sidebar element not found');
-        return;
-    }
+    function init() {
+        const sidebar = document.querySelector('aside.fi-sidebar');
+        if (!sidebar) return;
 
-    console.log('✅ Sidebar found:', sidebar);
-
-    // Function to force width
-    function forceWidth(width) {
-        sidebar.style.setProperty('width', width, 'important');
-        sidebar.style.setProperty('min-width', width, 'important');
-        sidebar.style.setProperty('max-width', width, 'important');
-        sidebar.style.setProperty('flex-basis', width, 'important');
-        console.log(`🔄 Forced width to: ${width}`);
-    }
-
-    // Function to check if sidebar should be collapsed
-    function isCollapsed() {
-        const style = sidebar.getAttribute('style') || '';
-        const dataCollapsed = sidebar.getAttribute('data-collapsed');
-        const ariaExpanded = sidebar.getAttribute('aria-expanded');
-        const hasCollapsedClass = sidebar.classList.contains('collapsed') || 
-                                 sidebar.classList.contains('fi-sidebar-collapsed');
-        
-        // Check if style contains small width values
-        const hasSmallWidth = style.includes('4.') || 
-                             style.includes('5.') || 
-                             style.includes('72') || 
-                             style.includes('80') ||
-                             style.includes('4rem') ||
-                             style.includes('5rem');
-        
-        return dataCollapsed === 'true' || 
-               ariaExpanded === 'false' || 
-               hasCollapsedClass ||
-               hasSmallWidth;
-    }
-
-    // Function to apply state
-    function applyState() {
-        const collapsed = isCollapsed();
-        
-        if (collapsed) {
-            forceWidth('4.5rem');
-            sidebar.classList.add('fi-sidebar-collapsed');
-        } else {
-            forceWidth('17rem');
-            sidebar.classList.remove('fi-sidebar-collapsed');
+        /**
+         * Sync our helper class with Filament's current state.
+         * We add `fi-sidebar-collapsed` when open class is absent,
+         * so our CSS in sidebar-collapse.css can target it.
+         */
+        function syncState() {
+            const isOpen = sidebar.classList.contains('fi-sidebar-open');
+            if (isOpen) {
+                sidebar.classList.remove('fi-sidebar-collapsed');
+            } else {
+                sidebar.classList.add('fi-sidebar-collapsed');
+            }
         }
+
+        // Watch class-list changes on the sidebar (Filament toggles fi-sidebar-open)
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    syncState();
+                }
+            });
+        });
+
+        observer.observe(sidebar, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
+        // Initial sync
+        syncState();
     }
 
-    // MutationObserver - watch EVERYTHING
-    const observer = new MutationObserver(function(mutations) {
-        console.log('👀 Mutation detected');
-        applyState();
-    });
+    // Run after DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 
-    // Observe ALL changes
-    observer.observe(sidebar, {
-        attributes: true,
-        attributeOldValue: true,
-        childList: false,
-        subtree: false
-    });
-
-    // Watch for ANY click on page
-    document.addEventListener('click', function(e) {
-        console.log('🖱️ Click detected');
-        setTimeout(applyState, 50);
-        setTimeout(applyState, 150);
-        setTimeout(applyState, 300);
-    }, true);
-
-    // Aggressive interval check every 250ms
-    setInterval(applyState, 250);
-
-    // Initial state
-    setTimeout(applyState, 100);
-    setTimeout(applyState, 500);
-    setTimeout(applyState, 1000);
-
-    console.log('✅ Sidebar collapse handler initialized');
-});
+    // Also re-init on Livewire page navigations (Filament uses Livewire navigate)
+    document.addEventListener('livewire:navigated', init);
+})();

@@ -1,0 +1,118 @@
+/* ============================================================
+   BUTTONS — Premium Style
+   ============================================================ */
+
+.fi-btn,
+button.fi-btn {
+    border-radius: var(--sp-radius) !important;
+    font-weight: 600 !important;
+    font-size: 0.9375rem !important;
+    padding: 0.625rem 1.375rem !important;
+    transition: all var(--sp-transition) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    letter-spacing: 0.01em !important;
+    cursor: pointer !important;
+    border: 1.5px solid transparent !important;
+    white-space: nowrap !important;
+    min-width: max-content !important;
+    line-height: 1.4 !important;
+}
+
+/* Page header buttons */
+.fi-page-header .fi-btn,
+.fi-header-actions .fi-btn,
+.fi-page-header-actions .fi-btn {
+    padding: 0.625rem 1.5rem !important;
+    font-size: 0.9375rem !important;
+    white-space: nowrap !important;
+    border-radius: var(--sp-radius) !important;
+}
+
+/* Primary Button (Blue) */
+.fi-btn-color-primary,
+.fi-btn[class*="primary"] {
+    background: linear-gradient(135deg, var(--sp-blue) 0%, var(--sp-blue-dark) 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(59,130,246,0.28) !important;
+}
+
+.fi-btn-color-primary:hover,
+.fi-btn[class*="primary"]:hover {
+    background: linear-gradient(135deg, var(--sp-blue-dark) 0%, #1d4ed8 100%) !important;
+    box-shadow: 0 6px 18px rgba(59,130,246,0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Warning Button (Amber) */
+.fi-btn-color-warning,
+.fi-btn[class*="warning"] {
+    background: linear-gradient(135deg, var(--sp-amber) 0%, var(--sp-amber-dark) 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.30) !important;
+}
+
+.fi-btn-color-warning:hover,
+.fi-btn[class*="warning"]:hover {
+    background: linear-gradient(135deg, var(--sp-amber-dark) 0%, #b45309 100%) !important;
+    box-shadow: 0 6px 18px rgba(245,158,11,0.42) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Success Button */
+.fi-btn-color-success,
+.fi-btn[class*="success"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(16,185,129,0.28) !important;
+}
+
+.fi-btn-color-success:hover,
+.fi-btn[class*="success"]:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    box-shadow: 0 6px 18px rgba(16,185,129,0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Danger Button */
+.fi-btn-color-danger,
+.fi-btn[class*="danger"] {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(239,68,68,0.28) !important;
+}
+
+.fi-btn-color-danger:hover,
+.fi-btn[class*="danger"]:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    box-shadow: 0 6px 18px rgba(239,68,68,0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Gray / Outlined Button */
+.fi-btn-color-gray,
+.fi-btn[class*="gray"],
+.fi-btn-outlined {
+    background-color: var(--sp-surface) !important;
+    color: var(--sp-body) !important;
+    border: 1.5px solid var(--sp-border) !important;
+    box-shadow: var(--sp-shadow-sm) !important;
+}
+
+.fi-btn-color-gray:hover,
+.fi-btn[class*="gray"]:hover {
+    background-color: var(--sp-surface-hover) !important;
+    border-color: #cbd5e1 !important;
+    color: var(--sp-heading) !important;
+}
+
+/* Button icons */
+.fi-btn svg {
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+}

@@ -1,0 +1,128 @@
+/* ============================================================
+   TOPBAR / HEADER
+   ============================================================ */
+.fi-topbar,
+.fi-header {
+    background-color: var(--sp-surface) !important;
+    border-bottom: 1px solid var(--sp-border) !important;
+    padding: 0.875rem 2rem !important;
+    box-shadow: 0 1px 4px rgba(15,23,42,.06) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 30 !important;
+}
+
+/* Page heading */
+.fi-header-heading,
+.fi-page-heading h1,
+h1.fi-heading {
+    font-size: 1.625rem !important;
+    font-weight: 700 !important;
+    color: var(--sp-heading) !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.25 !important;
+}
+
+/* Subheading */
+.fi-header-subheading,
+.fi-page-subheading {
+    color: var(--sp-muted) !important;
+    font-size: 0.9375rem !important;
+    margin-top: 0.25rem !important;
+}
+
+/* Header actions toolbar */
+.fi-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+}
+
+/* Notification bell */
+.fi-topbar-notification-trigger {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: var(--sp-radius) !important;
+    background-color: var(--sp-bg) !important;
+    border: 1px solid var(--sp-border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all var(--sp-transition) !important;
+    position: relative !important;
+}
+
+.fi-topbar-notification-trigger:hover {
+    background-color: var(--sp-border-light) !important;
+    border-color: #cbd5e1 !important;
+}
+
+.fi-topbar-notification-trigger svg {
+    color: var(--sp-muted) !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+/* User menu avatar button (top-right) */
+.fi-user-menu-trigger,
+.fi-user-menu-button,
+button[aria-label*="User menu"],
+[x-data*="userMenu"] button {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-user-menu-trigger:hover,
+.fi-user-menu-button:hover,
+button[aria-label*="User menu"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35) !important;
+}
+
+/* User avatar image in top right */
+.fi-topbar .fi-avatar,
+.fi-user-menu .fi-avatar {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* ============================================================
+   BREADCRUMB / PAGE HEADER — Remove card background
+   ============================================================ */
+.fi-breadcrumbs,
+.fi-page-header,
+.fi-header-breadcrumbs,
+[class*="fi-page"] > [class*="header"],
+.fi-page > header,
+.fi-page-header-ctn,
+.page-header-wrapper {
+    background-color: transparent !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.fi-page-heading,
+.fi-page-sub-navigation {
+    background-color: transparent !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
