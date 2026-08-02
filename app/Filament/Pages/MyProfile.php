@@ -180,9 +180,13 @@ class MyProfile extends Page implements HasForms
                             ->label('Email Address')
                             ->email()
                             ->required()
-                            ->disabled()
+                            ->disabled(fn () => Auth::user()->isStaff())
                             ->prefixIcon('heroicon-o-envelope')
-                            ->helperText('Email cannot be changed. Contact admin if needed.'),
+                            ->helperText(
+                                Auth::user()->isAdmin() 
+                                    ? 'You can update your email as an admin.' 
+                                    : 'Email cannot be changed. Contact admin if needed.'
+                            ),
                         TextInput::make('phone')
                             ->label('Phone Number')
                             ->tel()
@@ -210,7 +214,8 @@ class MyProfile extends Page implements HasForms
                                 'terminated' => 'Terminated',
                             ])
                             ->disabled()
-                            ->helperText('Contact HR to update employment status'),
+                            ->default('active')
+                            ->helperText('This shows your current work status. Only HR/Admin can modify this field.'),
                         Textarea::make('address')
                             ->label('Address')
                             ->rows(3)
@@ -252,7 +257,15 @@ class MyProfile extends Page implements HasForms
         $user = Auth::user();
 
         try {
-            $user->update(['name' => $data['name']]);
+            // Update user's name and email (email only for admins)
+            $userData = ['name' => $data['name']];
+            
+            // Allow admin to update their email
+            if ($user->isAdmin()) {
+                $userData['email'] = $data['email'];
+            }
+            
+            $user->update($userData);
 
             $profile = $user->staffProfile;
             

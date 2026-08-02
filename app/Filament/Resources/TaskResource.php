@@ -95,13 +95,15 @@ class TaskResource extends Resource
                         'primary' => 'medium',
                         'warning' => 'high',
                         'danger' => 'urgent',
-                    ]),
+                    ])
+                    ->formatStateUsing(fn (string $state): string => ucwords(str_replace('_', ' ', $state))),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
                         'warning' => 'pending',
                         'primary' => 'in_progress',
                         'success' => 'completed',
-                    ]),
+                    ])
+                    ->formatStateUsing(fn (string $state): string => ucwords(str_replace('_', ' ', $state))),
                 Tables\Columns\TextColumn::make('due_date')
                     ->date()
                     ->sortable(),

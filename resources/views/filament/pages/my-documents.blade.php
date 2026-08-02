@@ -3,7 +3,6 @@
 
     @php
         $docCount = auth()->user()->documents()->count();
-        $verifiedCount = auth()->user()->documents()->where('status','verified')->count();
     @endphp
 
     {{-- Documents info banner --}}
@@ -15,7 +14,7 @@
         </div>
         <div style="flex:1;">
             <p style="color:#1e40af;font-weight:700;font-size:0.9375rem;margin-bottom:0.125rem;">{{ $docCount }} Document{{ $docCount !== 1 ? 's' : '' }} Uploaded</p>
-            <p style="color:#3b82f6;font-size:0.875rem;">{{ $verifiedCount }} verified. Upload your documents to share them with the team securely.</p>
+            <p style="color:#3b82f6;font-size:0.875rem;">Upload your documents to share them with the team securely.</p>
         </div>
     </div>
 

@@ -94,14 +94,16 @@ class ProjectResource extends Resource
                         'primary' => 'in_progress',
                         'warning' => 'review',
                         'success' => 'completed',
-                    ]),
+                    ])
+                    ->formatStateUsing(fn (string $state): string => ucwords(str_replace('_', ' ', $state))),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
                         'success' => 'active',
                         'warning' => 'on_hold',
                         'primary' => 'completed',
                         'danger' => 'cancelled',
-                    ]),
+                    ])
+                    ->formatStateUsing(fn (string $state): string => ucwords(str_replace('_', ' ', $state))),
                 Tables\Columns\TextColumn::make('users_count')
                     ->label('Team Size')
                     ->counts('users')

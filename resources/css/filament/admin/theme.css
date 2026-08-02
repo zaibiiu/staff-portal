@@ -21,6 +21,7 @@
 @import './partials/topbar.css';
 @import './partials/buttons.css';
 @import './partials/auth.css';
+@import './partials/loading-states.css';
 
 /* ============================================================
    CSS CUSTOM PROPERTIES

@@ -55,7 +55,7 @@ class SalariesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('end_date')
                     ->date()
                     ->sortable()
-                    ->default('N/A'),
+                    ->placeholder('N/A'),
                 Tables\Columns\IconColumn::make('is_current')
                     ->label('Current')
                     ->boolean()
