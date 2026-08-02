@@ -1,5 +1,16 @@
 FROM dunglas/frankenphp:php8.2
 
+# Install system packages
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    curl
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Install PHP extensions
 RUN install-php-extensions \
     intl \
     zip \
@@ -19,9 +30,9 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN npm install && npm run build
+RUN npm install
 
-RUN php artisan storage:link || true
+RUN npm run build
 
 EXPOSE 8000
 
