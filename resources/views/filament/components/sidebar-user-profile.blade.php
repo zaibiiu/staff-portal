@@ -3,7 +3,7 @@
     <div class="sidebar-profile-avatar-wrap">
         @if(auth()->check() && auth()->user()->staffProfile?->profile_photo)
             <div class="sidebar-avatar">
-                <img src="{{ Storage::url(auth()->user()->staffProfile->profile_photo) }}" alt="{{ auth()->user()->name }}">
+                <img src="{{ asset('storage/' . auth()->user()->staffProfile->profile_photo) }}" alt="{{ auth()->user()->name }}">
             </div>
         @else
             <div class="sidebar-avatar">

@@ -3,7 +3,6 @@
 namespace App\Filament\Pages;
 
 use BackedEnum;
-use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -31,45 +30,48 @@ class MyProfile extends Page implements HasForms
 
     protected static ?string $title = 'My Profile';
 
-    public ?array $data = [];
-    
+    public ?array $data     = [];
     public ?array $passwordData = [];
+    public ?array $photoData    = [];
 
     public function mount(): void
     {
         $user = Auth::user();
+        $user->load('staffProfile');          // force fresh DB load
         $profile = $user->staffProfile;
 
-        if ($profile) {
-            $this->form->fill([
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $profile->phone,
-                'address' => $profile->address,
-                'date_of_birth' => $profile->date_of_birth,
-                'designation' => $profile->designation,
-                'cnic' => $profile->cnic,
-                'employment_status' => $profile->employment_status,
-                'emergency_contact_name' => $profile->emergency_contact_name,
-                'emergency_contact' => $profile->emergency_contact,
-                'profile_photo' => $profile->profile_photo,
-            ]);
-        } else {
-            $this->form->fill([
-                'name' => $user->name,
-                'email' => $user->email,
-            ]);
-        }
-        
+        $this->form->fill([
+            'name'                   => $user->name,
+            'email'                  => $user->email,
+            'phone'                  => $profile?->phone,
+            'address'                => $profile?->address,
+            'date_of_birth'          => $profile?->date_of_birth,
+            'designation'            => $profile?->designation,
+            'cnic'                   => $profile?->cnic,
+            'employment_status'      => $profile?->employment_status,
+            'emergency_contact_name' => $profile?->emergency_contact_name,
+            'emergency_contact'      => $profile?->emergency_contact,
+        ]);
+
+        // Fill photo form with existing photo path (plain string, not array)
+        $this->photoForm->fill([
+            'profile_photo' => $profile?->profile_photo ?? null,
+        ]);
+
         $this->passwordForm->fill([]);
     }
 
-    public function form(Schema $schema): Schema
+    // ─── Photo form ───────────────────────────────────────────────────────────
+    // NO ->live(), NO ->afterStateUpdated() — prevents spurious Livewire calls.
+    // The browser XHR (file upload) still runs automatically.
+    // The user clicks "Save Photo" to commit.
+
+    public function photoForm(Schema $schema): Schema
     {
         return $schema
             ->schema([
                 Section::make('Profile Photo')
-                    ->description('Upload or change your profile picture')
+                    ->description('Select your photo then click **Save Photo**')
                     ->schema([
                         FileUpload::make('profile_photo')
                             ->label('Profile Picture')
@@ -80,14 +82,92 @@ class MyProfile extends Page implements HasForms
                             ->imageEditor()
                             ->circleCropper()
                             ->avatar()
-                            ->imageEditorAspectRatios([
-                                '1:1',
-                            ])
+                            ->imageEditorAspectRatios(['1:1'])
                             ->maxSize(2048)
                             ->columnSpanFull()
-                            ->helperText('Upload a square image for best results'),
+                            ->helperText('Max size: 2MB. Click Save Photo after selecting.')
+                            ->uploadingMessage('Uploading...')
+                            ->imagePreviewHeight('150')
+                            ->panelAspectRatio('1:1')
+                            ->panelLayout('circle'),
                     ]),
+            ])
+            ->statePath('photoData');
+    }
 
+    public function uploadPhoto(): void
+    {
+        $user = Auth::user();
+
+        // getState() finalises temp file → moves it to permanent storage
+        $state = $this->photoForm->getState();
+        $photo = $state['profile_photo'] ?? null;
+
+        // FileUpload (even non-multiple) may return an array internally
+        if (is_array($photo)) {
+            $photo = array_values(array_filter($photo));
+            $photo = $photo[0] ?? null;
+        }
+
+        if (empty($photo)) {
+            Notification::make()
+                ->warning()
+                ->title('No Photo Selected')
+                ->body('Please select a photo first.')
+                ->duration(4000)
+                ->send();
+            return;
+        }
+
+        try {
+            // Load existing profile or fail if none exists
+            $profile = $user->staffProfile;
+            
+            if (!$profile) {
+                Notification::make()
+                    ->danger()
+                    ->title('Profile Not Found')
+                    ->body('Please contact HR to create your staff profile first.')
+                    ->duration(8000)
+                    ->send();
+                return;
+            }
+
+            // Update only the photo field
+            $profile->update(['profile_photo' => $photo]);
+
+            \Log::info('Profile photo updated for user: ' . $user->id);
+
+            // Refresh the relationship
+            $user->unsetRelation('staffProfile');
+            $user->load('staffProfile');
+
+            Notification::make()
+                ->success()
+                ->title('Photo Updated')
+                ->body('Your profile photo has been saved.')
+                ->icon('heroicon-o-check-circle')
+                ->duration(5000)
+                ->send();
+
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Photo Upload Failed')
+                ->body('Error: ' . $e->getMessage())
+                ->duration(8000)
+                ->send();
+
+            \Log::error('Profile photo upload error: ' . $e->getMessage());
+        }
+    }
+
+    // ─── Main profile form (fields, no photo) ─────────────────────────────────
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
                 Section::make('Personal Information')
                     ->description('Update your personal details')
                     ->schema([
@@ -102,7 +182,7 @@ class MyProfile extends Page implements HasForms
                             ->required()
                             ->disabled()
                             ->prefixIcon('heroicon-o-envelope')
-                            ->helperText('Email cannot be changed. Contact admin if you need to update it.'),
+                            ->helperText('Email cannot be changed. Contact admin if needed.'),
                         TextInput::make('phone')
                             ->label('Phone Number')
                             ->tel()
@@ -124,9 +204,9 @@ class MyProfile extends Page implements HasForms
                         Select::make('employment_status')
                             ->label('Employment Status')
                             ->options([
-                                'active' => 'Active',
-                                'inactive' => 'Inactive',
-                                'on_leave' => 'On Leave',
+                                'active'     => 'Active',
+                                'inactive'   => 'Inactive',
+                                'on_leave'   => 'On Leave',
                                 'terminated' => 'Terminated',
                             ])
                             ->disabled()
@@ -156,11 +236,76 @@ class MyProfile extends Page implements HasForms
 
     protected function getForms(): array
     {
-        return [
-            'form',
-            'passwordForm',
-        ];
+        return ['form', 'passwordForm', 'photoForm'];
     }
+
+    protected function getFormActions(): array
+    {
+        return [];
+    }
+
+    // ─── Save profile fields ──────────────────────────────────────────────────
+
+    public function updateProfile(): void
+    {
+        $data = $this->form->getState();
+        $user = Auth::user();
+
+        try {
+            $user->update(['name' => $data['name']]);
+
+            $profile = $user->staffProfile;
+            
+            if (!$profile) {
+                Notification::make()
+                    ->danger()
+                    ->title('Profile Not Found')
+                    ->body('Please contact HR to create your staff profile first.')
+                    ->duration(8000)
+                    ->send();
+                return;
+            }
+
+            $profileData = [
+                'phone'                  => $data['phone'] ?? null,
+                'address'                => $data['address'] ?? null,
+                'date_of_birth'          => $data['date_of_birth'] ?? null,
+                'designation'            => $data['designation'] ?? null,
+                'cnic'                   => $data['cnic'] ?? null,
+                'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
+                'emergency_contact'      => $data['emergency_contact'] ?? null,
+            ];
+
+            $profile->update($profileData);
+
+            // Refresh the relationship
+            $user->unsetRelation('staffProfile');
+            $user->load('staffProfile');
+
+            Notification::make()
+                ->success()
+                ->title('Profile Updated Successfully')
+                ->body('Your profile information has been saved.')
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->duration(5000)
+                ->send();
+
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Error Updating Profile')
+                ->body($e->getMessage())
+                ->icon('heroicon-o-x-circle')
+                ->iconColor('danger')
+                ->duration(8000)
+                ->send();
+
+            \Log::error('Profile update error: ' . $e->getMessage());
+        }
+    }
+
+    // ─── Password form ────────────────────────────────────────────────────────
 
     public function passwordForm(Schema $schema): Schema
     {
@@ -183,7 +328,7 @@ class MyProfile extends Page implements HasForms
                             ->minLength(8)
                             ->same('password_confirmation')
                             ->prefixIcon('heroicon-o-lock-closed')
-                            ->helperText('Password must be at least 8 characters long'),
+                            ->helperText('At least 8 characters'),
                         TextInput::make('password_confirmation')
                             ->label('Confirm New Password')
                             ->password()
@@ -195,84 +340,13 @@ class MyProfile extends Page implements HasForms
             ->statePath('passwordData');
     }
 
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('save')
-                ->label('Save Profile Changes')
-                ->submit('save')
-                ->icon('heroicon-o-check')
-                ->color('primary')
-                ->requiresConfirmation(false)
-                ->successNotificationTitle('Profile Updated')
-                ->extraAttributes(['class' => 'w-full sm:w-auto']),
-        ];
-    }
-
-    public function save(): void
-    {
-        $data = $this->form->getState();
-        $user = Auth::user();
-
-        try {
-            $user->update([
-                'name' => $data['name'],
-            ]);
-
-            $profileData = [
-                'phone' => $data['phone'] ?? null,
-                'address' => $data['address'] ?? null,
-                'date_of_birth' => $data['date_of_birth'] ?? null,
-                'designation' => $data['designation'] ?? null,
-                'cnic' => $data['cnic'] ?? null,
-                'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
-                'emergency_contact' => $data['emergency_contact'] ?? null,
-                'profile_photo' => $data['profile_photo'] ?? null,
-            ];
-
-            if ($user->staffProfile) {
-                $user->staffProfile->update($profileData);
-            } else {
-                $user->staffProfile()->create(array_merge($profileData, [
-                    'employee_id' => 'EMP' . str_pad($user->id, 4, '0', STR_PAD_LEFT),
-                    'employment_status' => 'active',
-                ]));
-            }
-
-            Notification::make()
-                ->success()
-                ->title('Profile Updated Successfully')
-                ->body('Your profile information has been saved.')
-                ->icon('heroicon-o-check-circle')
-                ->iconColor('success')
-                ->duration(5000)
-                ->send();
-                
-            // Refresh the profile relationship to show updated data
-            $user->load('staffProfile');
-            
-        } catch (\Exception $e) {
-            Notification::make()
-                ->danger()
-                ->title('Error Updating Profile')
-                ->body('There was an error saving your profile. Please try again.')
-                ->icon('heroicon-o-x-circle')
-                ->iconColor('danger')
-                ->duration(5000)
-                ->send();
-                
-            \Log::error('Profile update error: ' . $e->getMessage());
-        }
-    }
-
     public function updatePassword(): void
     {
         $data = $this->passwordForm->getState();
         $user = Auth::user();
 
         try {
-            // Verify current password
-            if (!Hash::check($data['current_password'], $user->password)) {
+            if (! Hash::check($data['current_password'], $user->password)) {
                 Notification::make()
                     ->danger()
                     ->title('Incorrect Password')
@@ -284,24 +358,20 @@ class MyProfile extends Page implements HasForms
                 return;
             }
 
-            // Update password
-            $user->update([
-                'password' => Hash::make($data['password']),
-            ]);
+            $user->update(['password' => Hash::make($data['password'])]);
 
-            // Clear password form
             $this->passwordData = [];
             $this->passwordForm->fill([]);
 
             Notification::make()
                 ->success()
                 ->title('Password Changed Successfully')
-                ->body('Your password has been updated. Please use your new password for future logins.')
+                ->body('Your password has been updated.')
                 ->icon('heroicon-o-check-circle')
                 ->iconColor('success')
                 ->duration(5000)
                 ->send();
-                
+
         } catch (\Exception $e) {
             Notification::make()
                 ->danger()
@@ -311,7 +381,7 @@ class MyProfile extends Page implements HasForms
                 ->iconColor('danger')
                 ->duration(5000)
                 ->send();
-                
+
             \Log::error('Password update error: ' . $e->getMessage());
         }
     }

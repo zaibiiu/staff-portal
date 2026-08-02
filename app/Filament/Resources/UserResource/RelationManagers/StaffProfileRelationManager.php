@@ -33,9 +33,13 @@ class StaffProfileRelationManager extends RelationManager
                             ->maxLength(255),
                         Forms\Components\FileUpload::make('profile_photo')
                             ->image()
+                            ->disk('public')
                             ->directory('profile-photos')
+                            ->visibility('public')
                             ->imageEditor()
-                            ->circleCropper(),
+                            ->circleCropper()
+                            ->uploadingMessage('Uploading photo...')
+                            ->imagePreviewHeight('100'),
                         Forms\Components\TextInput::make('phone')
                             ->tel()
                             ->maxLength(255),
@@ -99,7 +103,8 @@ class StaffProfileRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('profile_photo')
-                    ->circular(),
+                    ->circular()
+                    ->disk('public'),
                 Tables\Columns\TextColumn::make('employee_id')
                     ->label('Employee ID')
                     ->searchable(),

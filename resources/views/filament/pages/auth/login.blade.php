@@ -7,8 +7,15 @@
             <p class="auth-subtitle">Welcome back! Please login to your account</p>
         </div>
 
-        {{-- Login Form (rendered by Filament using Schema) --}}
-        {{ $this->content }}
+        {{-- Login Form (rendered by Filament) --}}
+        <x-filament-panels::form wire:submit="authenticate">
+            {{ $this->form }}
+
+            <x-filament-panels::form.actions
+                :actions="$this->getCachedFormActions()"
+                :full-width="$this->hasFullWidthFormActions()"
+            />
+        </x-filament-panels::form>
 
         {{-- Footer Text --}}
         <div class="auth-footer">

@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -141,5 +142,32 @@ class User extends Authenticatable implements FilamentUser
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    /**
+     * Get the user's avatar URL for Filament
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        // Eager load staff profile if not loaded
+        if (!$this->relationLoaded('staffProfile')) {
+            $this->load('staffProfile');
+        }
+        
+        // Return avatar URL if profile photo exists
+        if ($this->staffProfile && $this->staffProfile->profile_photo) {
+            // Use asset path for consistency with sidebar
+            return asset('storage/' . $this->staffProfile->profile_photo);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get the user's name for Filament
+     */
+    public function getFilamentName(): string
+    {
+        return $this->name;
     }
 }

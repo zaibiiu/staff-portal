@@ -94,6 +94,10 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::BODY_END,
                 fn () => \Illuminate\Support\Facades\Blade::render('@vite("resources/js/sidebar-collapse.js")')
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn () => \Illuminate\Support\Facades\Blade::render('@vite("resources/js/user-avatar.js")')
             );
     }
 }
