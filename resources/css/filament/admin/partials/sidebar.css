@@ -1,132 +1,257 @@
 /* ============================================================
-   SIDEBAR - Navy Premium
+   SIDEBAR — NAV STRUCTURE
+   Verified against real Filament v5 DOM (dev.staffhub.com/admin):
+
+   #fi-main-sidebar                     ← aside wrapper
+   └─ nav.fi-sidebar-nav
+      ├─ .sidebar-profile-section        ← custom blade component
+      └─ ul.fi-sidebar-nav-groups
+         └─ li.fi-sidebar-group [.fi-collapsible] [.fi-active]
+            ├─ .fi-sidebar-group-btn           ← collapsible groups only
+            │  ├─ span.fi-sidebar-group-label  ← "MY PORTAL"
+            │  └─ button.fi-sidebar-group-collapse-btn
+            └─ ul.fi-sidebar-group-items
+               └─ li.fi-sidebar-item [.fi-active] [.fi-sidebar-item-has-url]
+                  └─ a.fi-sidebar-item-btn
+                     ├─ svg.fi-sidebar-item-icon.fi-icon.fi-size-lg
+                     └─ span.fi-sidebar-item-label
+
+   Design rules:
+   • All spacing via --sp-* tokens only
+   • NO hard-coded rem values for layout
+   • ALL nav text and icons = solid #ffffff, never muted/gray
    ============================================================ */
-.fi-sidebar {
+
+/* ── Sidebar shell ─────────────────────────────────────────── */
+#fi-main-sidebar,
+.fi-sidebar,
+.fi-main-sidebar {
     background-color: var(--sp-sidebar-bg) !important;
     border-right: none !important;
-    box-shadow: 2px 0 16px rgba(15, 23, 42, 0.18) !important;
-    /* DO NOT hardcode width — Filament controls it via --sidebar-width CSS var.
-       Hardcoding breaks the collapse toggle. */
+    box-shadow: 2px 0 20px rgba(15, 23, 42, 0.22) !important;
     transition: width 0.3s ease, min-width 0.3s ease !important;
     overflow: hidden !important;
 }
 
-/* Sidebar nav inner - REMOVE ALL SPACING */
+/* ── Sidebar nav wrapper ───────────────────────────────────── */
 .fi-sidebar-nav {
     background-color: var(--sp-sidebar-bg) !important;
-    padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
+    padding: 0 !important;
     gap: 0 !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* FORCE remove Filament default spacing */
+/* Strip Filament default spacing on direct nav children */
 .fi-sidebar-nav > * {
     margin: 0 !important;
     padding: 0 !important;
 }
 
-/* ---- Brand / Logo area — HIDDEN ---- */
-.fi-sidebar-header {
+/* ── Sidebar header — hidden; profile card replaces it ─────── */
+.fi-sidebar-header,
+.fi-sidebar-header-ctn {
     display: none !important;
 }
 
-/* ---- Group section labels ---- */
-.fi-sidebar-group-label,
-[class*="fi-sidebar"] [class*="group-label"] {
+/* ============================================================
+   ul.fi-sidebar-nav-groups  — top-level list
+   ============================================================ */
+ul.fi-sidebar-nav-groups {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+}
+
+/* ============================================================
+   li.fi-sidebar-group  — one group (e.g. "default" + "MY PORTAL")
+   gap between groups = var(--sp-nav-group-mb)
+   ============================================================ */
+li.fi-sidebar-group {
+    list-style: none !important;
+    margin: 0 0 var(--sp-nav-group-mb) 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+}
+
+/* ── Group header button (collapsible groups only) ─────────── */
+.fi-sidebar-group-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-top:    var(--sp-nav-label-pt) !important;
+    padding-bottom: var(--sp-nav-label-pb) !important;
+    padding-left:   var(--sp-nav-label-px) !important;
+    padding-right:  0.75rem !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+}
+
+/* ── Group label text (e.g. "MY PORTAL") ──────────────────── */
+.fi-sidebar-group-label {
     color: var(--sp-sidebar-muted) !important;
     font-size: 0.6875rem !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.09em !important;
-    padding: 0.5rem 1.25rem 0.3rem !important;
     margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
 }
 
-/* ---- Navigation items ---- */
-.fi-sidebar-item {
-    padding: 0 0.875rem !important;
-    margin: 0 !important;
-    row-gap: 0 !important;
-    gap: 0 !important;
+/* ── Collapse chevron icon ─────────────────────────────────── */
+.fi-sidebar-group-collapse-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 0.25rem !important;
+    border-radius: 0.25rem !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
 }
 
-/* Remove Filament's default row-gap */
-.fi-sidebar-group {
-    row-gap: 0 !important;
-    gap: 0 !important;
-    margin: 0 0 0.3rem 0 !important;
+.fi-sidebar-group-collapse-btn svg,
+.fi-sidebar-group-collapse-btn .fi-icon {
+    width:  0.875rem !important;
+    height: 0.875rem !important;
+    color: var(--sp-sidebar-muted) !important;
+}
+
+/* ============================================================
+   ul.fi-sidebar-group-items  — list of items in a group
+   ============================================================ */
+ul.fi-sidebar-group-items {
+    list-style: none !important;
+    margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
+    gap: var(--sp-nav-group-gap) !important;
 }
 
+/* ============================================================
+   li.fi-sidebar-item  — individual nav item wrapper
+   ============================================================ */
+li.fi-sidebar-item {
+    list-style: none !important;
+    margin: 0 !important;
+    padding-left:  var(--sp-nav-item-px) !important;
+    padding-right: var(--sp-nav-item-px) !important;
+    padding-top:    0 !important;
+    padding-bottom: 0 !important;
+    gap: 0 !important;
+    row-gap: 0 !important;
+}
+
+/* ============================================================
+   a.fi-sidebar-item-btn  — clickable nav button
+   WHITE text/icons always — never gray, never muted
+   ============================================================ */
+a.fi-sidebar-item-btn,
 .fi-sidebar-item-btn,
-.fi-sidebar-item a,
-.fi-sidebar-item button {
+li.fi-sidebar-item > a,
+li.fi-sidebar-item > button {
     display: flex !important;
     align-items: center !important;
-    gap: 0.8125rem !important;
-    padding: 0.65rem 1rem !important;
-    margin: 0.1rem 0 !important;
+    gap: var(--sp-nav-btn-gap) !important;
+    padding-top:    var(--sp-nav-btn-py) !important;
+    padding-bottom: var(--sp-nav-btn-py) !important;
+    padding-left:   var(--sp-nav-btn-px) !important;
+    padding-right:  var(--sp-nav-btn-px) !important;
+    margin: 0 !important;
     border-radius: var(--sp-radius-sm) !important;
     font-size: 0.9375rem !important;
     font-weight: 500 !important;
-    color: var(--sp-sidebar-text) !important;
-    transition: background var(--sp-transition), color var(--sp-transition), transform var(--sp-transition) !important;
+
+    /* ✅ SOLID WHITE — override Filament's gray-400 default */
+    color: #ffffff !important;
+    opacity: 1 !important;
+
     text-decoration: none !important;
-    min-height: auto !important;
+    min-height: unset !important;
     height: auto !important;
+    background-color: transparent !important;
+    border: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    transition:
+        background-color var(--sp-transition),
+        transform var(--sp-transition) !important;
 }
 
+/* ── Icon inside nav button ────────────────────────────────── */
+a.fi-sidebar-item-btn svg,
+a.fi-sidebar-item-btn .fi-sidebar-item-icon,
+a.fi-sidebar-item-btn .fi-icon,
+.fi-sidebar-item-btn svg,
+.fi-sidebar-item-btn .fi-icon {
+    width:  1.25rem !important;
+    height: 1.25rem !important;
+    flex-shrink: 0 !important;
+    color: #ffffff !important;  /* ✅ solid white icons */
+    opacity: 1 !important;
+}
+
+/* ── Label text inside nav button ─────────────────────────── */
+a.fi-sidebar-item-btn .fi-sidebar-item-label,
+.fi-sidebar-item-btn .fi-sidebar-item-label,
+.fi-sidebar-item-label {
+    color: #ffffff !important;  /* ✅ solid white labels */
+    opacity: 1 !important;
+    font-size: 0.9375rem !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* ── Hover state ───────────────────────────────────────────── */
+a.fi-sidebar-item-btn:hover,
 .fi-sidebar-item-btn:hover,
-.fi-sidebar-item a:hover,
-.fi-sidebar-item button:hover {
-    background-color: var(--sp-sidebar-hover) !important;
+li.fi-sidebar-item > a:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    transform: translateX(2px) !important;
     color: #ffffff !important;
-    transform: translateX(3px) !important;
+    opacity: 1 !important;
 }
 
-.fi-sidebar-item-btn:hover *,
-.fi-sidebar-item a:hover *,
-.fi-sidebar-item button:hover * {
+a.fi-sidebar-item-btn:hover svg,
+a.fi-sidebar-item-btn:hover .fi-icon,
+a.fi-sidebar-item-btn:hover .fi-sidebar-item-label {
     color: #ffffff !important;
+    opacity: 1 !important;
 }
 
-/* ACTIVE state */
-.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
-.fi-sidebar-item.fi-active > a,
-.fi-sidebar-item[aria-current="page"] > .fi-sidebar-item-btn,
-.fi-sidebar-item[aria-current="page"] > a,
-a[aria-current="page"] {
+/* ── Active state ──────────────────────────────────────────── */
+li.fi-sidebar-item.fi-active > a.fi-sidebar-item-btn,
+li.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+li.fi-sidebar-item[aria-current="page"] > a,
+a.fi-sidebar-item-btn[aria-current="page"] {
     background-color: var(--sp-sidebar-active) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4) !important;
+    opacity: 1 !important;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.38) !important;
     transform: none !important;
 }
 
-.fi-sidebar-item.fi-active .fi-sidebar-item-label,
-.fi-sidebar-item[aria-current="page"] .fi-sidebar-item-label,
-.fi-sidebar-item.fi-active *,
-.fi-sidebar-item[aria-current="page"] * {
+li.fi-sidebar-item.fi-active > a svg,
+li.fi-sidebar-item.fi-active > a .fi-icon,
+li.fi-sidebar-item.fi-active > a .fi-sidebar-item-label {
     color: #ffffff !important;
+    opacity: 1 !important;
 }
 
-/* Active icon */
-.fi-sidebar-item.fi-active svg,
-.fi-sidebar-item[aria-current="page"] svg {
-    color: #ffffff !important;
-}
-
-/* Sidebar icons */
-.fi-sidebar-item svg {
-    width: 1.3125rem !important;
-    height: 1.3125rem !important;
-    flex-shrink: 0 !important;
-    color: var(--sp-sidebar-text) !important;
-}
-
-/* Sidebar badge */
+/* ── Count badge on items ──────────────────────────────────── */
 .fi-sidebar-item .fi-badge,
 .fi-sidebar-item-badge {
     background: linear-gradient(135deg, var(--sp-amber) 0%, var(--sp-amber-dark) 100%) !important;
@@ -137,4 +262,26 @@ a[aria-current="page"] {
     border-radius: 9999px !important;
     min-width: 1.35rem !important;
     text-align: center !important;
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+}
+
+/* ── Nuclear override: ensure NO Filament/Tailwind class dims sidebar text ── */
+#fi-main-sidebar .fi-sidebar-nav *:not(button):not(input) {
+    color: #fff !important;
+    opacity: inherit !important;
+}
+
+/* Filament v5 sometimes uses text-gray-* utilities via Tailwind JIT —
+   override them inside the sidebar context */
+#fi-main-sidebar [class*="text-gray"],
+#fi-main-sidebar [class*="text-slate"],
+#fi-main-sidebar [class*="text-zinc"] {
+    color: rgba(255, 255, 255, 0.65) !important;
+}
+
+#fi-main-sidebar .fi-sidebar-item-btn [class*="text-gray"],
+#fi-main-sidebar .fi-sidebar-item-btn [class*="text-slate"],
+#fi-main-sidebar .fi-sidebar-item-btn [class*="text-zinc"] {
+    color: #ffffff !important;
 }

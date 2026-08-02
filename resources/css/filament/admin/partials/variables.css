@@ -1,30 +1,52 @@
 /* ============================================================
    CSS CUSTOM PROPERTIES
+   NOTE: This file is the same token set as _variables.css
+   (imported by theme.css). Keep them in sync.
    ============================================================ */
 :root {
-    /* Sidebar */
-    --sp-sidebar-bg:       #1e2d5a;
-    --sp-sidebar-darker:   #172348;
-    --sp-sidebar-active:   #3b82f6;
-    --sp-sidebar-hover:    rgba(59, 130, 246, 0.15);
-    --sp-sidebar-border:   rgba(255, 255, 255, 0.07);
-    --sp-sidebar-text:     rgba(255, 255, 255, 0.72);
-    --sp-sidebar-muted:    rgba(255, 255, 255, 0.38);
+    /* ---- Sidebar colours ---- */
+    --sp-sidebar-bg:            #1e2d5a;
+    --sp-sidebar-darker:        #172348;
+    --sp-sidebar-active:        #3b82f6;
+    --sp-sidebar-hover:         rgba(59, 130, 246, 0.15);
+    --sp-sidebar-border:        rgba(255, 255, 255, 0.08);
+    --sp-sidebar-text:          rgba(255, 255, 255, 0.72);
+    --sp-sidebar-muted:         rgba(255, 255, 255, 0.38);
 
-    /* Surface */
+    /* ---- Sidebar spacing scale (single source of truth) ---- */
+    /* Profile section */
+    --sp-profile-pt:            1.5rem;    /* top clearance below navbar      */
+    --sp-profile-px:            1.25rem;   /* left/right padding               */
+    --sp-profile-pb:            1.25rem;   /* bottom padding before separator  */
+    --sp-profile-gap:           0.5rem;    /* gap between every profile child  */
+    --sp-profile-avatar-size:   4.5rem;    /* avatar diameter                  */
+    --sp-profile-avatar-mb:     0.125rem;  /* extra space below avatar         */
+    /* Nav section */
+    --sp-nav-section-gap:       0.75rem;   /* margin-bottom on profile section  */
+    --sp-nav-group-gap:         0rem;      /* gap between items inside a group */
+    --sp-nav-group-mb:          0.375rem;  /* margin below each group          */
+    --sp-nav-item-px:           0.75rem;   /* horizontal padding on item wrapper */
+    --sp-nav-btn-px:            0.875rem;  /* left/right inside nav button     */
+    --sp-nav-btn-py:            0.5625rem; /* top/bottom inside nav button     */
+    --sp-nav-btn-gap:           0.75rem;   /* gap between icon and label       */
+    --sp-nav-label-pt:          0.625rem;  /* top padding on group label       */
+    --sp-nav-label-pb:          0.3125rem; /* bottom padding on group label    */
+    --sp-nav-label-px:          1.125rem;  /* left/right padding on label      */
+
+    /* ---- Surface ---- */
     --sp-bg:               #f0f4f8;
     --sp-surface:          #ffffff;
     --sp-surface-hover:    #f8fafc;
     --sp-border:           #e2e8f0;
     --sp-border-light:     #f1f5f9;
 
-    /* Content */
+    /* ---- Content ---- */
     --sp-heading:          #0f172a;
     --sp-body:             #334155;
     --sp-muted:            #64748b;
     --sp-placeholder:      #94a3b8;
 
-    /* Accent */
+    /* ---- Accent ---- */
     --sp-blue:             #3b82f6;
     --sp-blue-dark:        #2563eb;
     --sp-amber:            #f59e0b;
@@ -34,18 +56,18 @@
     --sp-purple:           #8b5cf6;
     --sp-teal:             #14b8a6;
 
-    /* Radius */
+    /* ---- Radius ---- */
     --sp-radius-sm:        0.5rem;
     --sp-radius:           0.75rem;
     --sp-radius-lg:        1rem;
     --sp-radius-xl:        1.25rem;
 
-    /* Shadows */
+    /* ---- Shadows ---- */
     --sp-shadow-sm:        0 1px 3px rgba(15,23,42,.07), 0 1px 2px rgba(15,23,42,.05);
     --sp-shadow:           0 4px 12px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.05);
     --sp-shadow-md:        0 8px 24px rgba(15,23,42,.10), 0 4px 8px rgba(15,23,42,.06);
     --sp-shadow-lg:        0 20px 40px rgba(15,23,42,.14), 0 8px 16px rgba(15,23,42,.08);
 
-    /* Transitions */
+    /* ---- Transitions ---- */
     --sp-transition:       0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
