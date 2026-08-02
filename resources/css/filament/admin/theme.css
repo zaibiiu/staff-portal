@@ -14,11 +14,13 @@
    ============================================================ */
 @import './partials/variables.css';
 @import './partials/base.css';
+@import './partials/avatars.css';
 @import './partials/sidebar.css';
 @import './partials/sidebar-profile.css';
 @import './partials/sidebar-collapse.css';
 @import './partials/topbar.css';
 @import './partials/buttons.css';
+@import './partials/auth.css';
 
 /* ============================================================
    CSS CUSTOM PROPERTIES
@@ -202,7 +204,7 @@ body,
     box-shadow: 0 1px 4px rgba(15,23,42,.06) !important;
     position: sticky !important;
     top: 0 !important;
-    z-index: 30 !important;
+    z-index: 10 !important;
 }
 
 /* Page heading */
@@ -679,13 +681,12 @@ label.fi-label {
 .fi-select-input {
     width: 100% !important;
     padding: 0.6875rem 1rem !important;
-    border: 1.5px solid var(--sp-border) !important;
+    border: 1px solid #E2E8F0;
     border-radius: var(--sp-radius) !important;
     font-size: 0.9375rem !important;
     color: var(--sp-heading) !important;
     background-color: var(--sp-surface) !important;
     transition: border-color var(--sp-transition), box-shadow var(--sp-transition) !important;
-    line-height: 1.5 !important;
     appearance: none !important;
 }
 
@@ -1140,7 +1141,7 @@ label.fi-label {
 }
 
 .fi-simple-main-ctn {
-    max-width: 28rem !important;
+    max-width: 100% !important;
     width: 100% !important;
 }
 
@@ -1330,14 +1331,14 @@ a.fi-link:hover,
     width: 100% !important;
 }
 
-/* Form section cards span full width */
-.fi-page .fi-fo-section,
-.fi-fo-component-ctn > .fi-section,
-.fi-page .fi-section:not(.fi-ta-ctn) {
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: 1 !important;
-}
+/*!* Form section cards span full width *!*/
+/*.fi-page .fi-fo-section,*/
+/*.fi-fo-component-ctn > .fi-section,*/
+/*.fi-page .fi-section:not(.fi-ta-ctn) {*/
+/*    width: 100% !important;*/
+/*    max-width: 100% !important;*/
+/*    flex: 1 !important;*/
+/*}*/
 
 /* Actions bar at bottom full width */
 .fi-page .fi-fo-actions {
@@ -1600,3 +1601,23 @@ input[type="date"],
     cursor: pointer !important;
 }
 
+.fi-page .fi-sc-component > .fi-grid.lg\:fi-grid-cols {
+    --cols-lg: repeat(1, minmax(0, 1fr)) !important;
+}
+.fi-input-wrp {
+    --tw-shadow: none !important;
+}
+
+    .fi-input-wrp .fi-input-wrp-suffix:not(.fi-inline) {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+    }
+
+.fi-fo-textarea.fi-input-wrp {
+    border: 1px solid #e2e8f0 !important;
+}
+.fi-input-wrp .fi-input-wrp-prefix:not(.fi-inline) {
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+}

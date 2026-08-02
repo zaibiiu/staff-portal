@@ -1,0 +1,212 @@
+/* ============================================================
+   AUTHENTICATION PAGE - Premium Split Screen
+   Matches Botble design: 33% form (col-4) | 67% image (col-8)
+   No blue overlay, no text on image, full height, no gaps
+   ============================================================ */
+
+/* Remove ALL default Filament padding and constraints */
+body:has(.premium-auth-content),
+body:has(.premium-auth-content) .fi-body,
+body:has(.premium-auth-content) .fi-simple-layout,
+body:has(.premium-auth-content) .fi-simple-main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+body:has(.premium-auth-content) .fi-simple-page {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    max-width: none !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
+    display: grid !important;
+    grid-template-columns: 33.333333% 66.666667% !important; /* col-4 and col-8 */
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Hide default header */
+body:has(.premium-auth-content) .fi-simple-header {
+    display: none !important;
+}
+
+/* Hide default page content wrapper padding */
+body:has(.premium-auth-content) .fi-simple-page-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: contents !important;
+}
+
+/* Left Side - Form Content (col-4 = 33.33%) */
+.premium-auth-content {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 3rem !important; /* Only horizontal padding */
+    margin: 0 !important;
+    background: #ffffff;
+    overflow-y: auto;
+    height: 100vh !important;
+    min-height: 100vh !important;
+}
+
+.auth-brand {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-brand-logo {
+    height: 5rem;
+    width: auto;
+    margin: 0 auto 1.5rem;
+    display: block;
+    object-fit: contain;
+}
+
+.auth-subtitle {
+    font-size: 0.9375rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Form container - full width within column */
+.premium-auth-content > form,
+.premium-auth-content > div[wire\:submit] {
+    width: 100%;
+    max-width: 100%;
+}
+
+.auth-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #94a3b8;
+    width: 100%;
+}
+
+.auth-footer p {
+    margin: 0;
+}
+
+/* Right Side - Background Image (col-8 = 66.67%) - NO OVERLAY, NO TEXT */
+.auth-image-side-overlay {
+    grid-column: 2;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Remove all overlays and text - just pure image like Botble */
+.auth-image-side-overlay::before,
+.auth-image-side-overlay::after {
+    display: none !important;
+}
+
+/* Form inputs on auth page */
+.premium-auth-content input[type="email"],
+.premium-auth-content input[type="password"],
+.premium-auth-content input[type="text"] {
+    padding: 0.75rem 1rem !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 0.625rem !important;
+    font-size: 0.9375rem !important;
+    transition: all 0.2s ease !important;
+    background: #ffffff !important;
+}
+
+.premium-auth-content input:focus {
+    outline: none !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Form labels */
+.premium-auth-content label {
+    font-weight: 600 !important;
+    color: #0f172a !important;
+    font-size: 0.875rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Remember me checkbox */
+.premium-auth-content [type="checkbox"] {
+    width: 1rem !important;
+    height: 1rem !important;
+    border-radius: 0.3125rem !important;
+    border: 1.5px solid #cbd5e1 !important;
+}
+
+.premium-auth-content [type="checkbox"]:checked {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+}
+
+/* Submit button styling */
+.premium-auth-content button[type="submit"] {
+    width: 100% !important;
+    justify-content: center !important;
+    margin-top: 1.25rem !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.9375rem !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border: none !important;
+    border-radius: 0.625rem !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+    transition: all 0.2s ease !important;
+}
+
+.premium-auth-content button[type="submit"]:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Responsive - Mobile/Tablet */
+@media (max-width: 1024px) {
+    body:has(.premium-auth-content) .fi-simple-page {
+        grid-template-columns: 1fr !important;
+    }
+
+    .auth-image-side-overlay {
+        display: none !important;
+    }
+
+    .premium-auth-content {
+        min-height: 100vh;
+        height: auto !important;
+        padding: 2rem 1.5rem !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .premium-auth-content {
+        padding: 2rem 1.25rem !important;
+    }
+
+    .auth-title {
+        font-size: 1.625rem;
+    }
+
+    .auth-brand {
+        margin-bottom: 1.5rem;
+    }
+}

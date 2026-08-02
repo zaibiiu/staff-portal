@@ -74,7 +74,9 @@ class MyProfile extends Page implements HasForms
                         FileUpload::make('profile_photo')
                             ->label('Profile Picture')
                             ->image()
+                            ->disk('public')
                             ->directory('profile-photos')
+                            ->visibility('public')
                             ->imageEditor()
                             ->circleCropper()
                             ->avatar()
@@ -82,7 +84,8 @@ class MyProfile extends Page implements HasForms
                                 '1:1',
                             ])
                             ->maxSize(2048)
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->helperText('Upload a square image for best results'),
                     ]),
 
                 Section::make('Personal Information')
@@ -121,10 +124,10 @@ class MyProfile extends Page implements HasForms
                         Select::make('employment_status')
                             ->label('Employment Status')
                             ->options([
-                                'full_time' => 'Full Time',
-                                'part_time' => 'Part Time',
-                                'contract' => 'Contract',
-                                'probation' => 'Probation',
+                                'active' => 'Active',
+                                'inactive' => 'Inactive',
+                                'on_leave' => 'On Leave',
+                                'terminated' => 'Terminated',
                             ])
                             ->disabled()
                             ->helperText('Contact HR to update employment status'),
@@ -198,7 +201,11 @@ class MyProfile extends Page implements HasForms
             Action::make('save')
                 ->label('Save Profile Changes')
                 ->submit('save')
-                ->icon('heroicon-o-check'),
+                ->icon('heroicon-o-check')
+                ->color('primary')
+                ->requiresConfirmation(false)
+                ->successNotificationTitle('Profile Updated')
+                ->extraAttributes(['class' => 'w-full sm:w-auto']),
         ];
     }
 
@@ -207,35 +214,55 @@ class MyProfile extends Page implements HasForms
         $data = $this->form->getState();
         $user = Auth::user();
 
-        $user->update([
-            'name' => $data['name'],
-        ]);
+        try {
+            $user->update([
+                'name' => $data['name'],
+            ]);
 
-        $profileData = [
-            'phone' => $data['phone'] ?? null,
-            'address' => $data['address'] ?? null,
-            'date_of_birth' => $data['date_of_birth'] ?? null,
-            'designation' => $data['designation'] ?? null,
-            'cnic' => $data['cnic'] ?? null,
-            'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
-            'emergency_contact' => $data['emergency_contact'] ?? null,
-            'profile_photo' => $data['profile_photo'] ?? null,
-        ];
+            $profileData = [
+                'phone' => $data['phone'] ?? null,
+                'address' => $data['address'] ?? null,
+                'date_of_birth' => $data['date_of_birth'] ?? null,
+                'designation' => $data['designation'] ?? null,
+                'cnic' => $data['cnic'] ?? null,
+                'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
+                'emergency_contact' => $data['emergency_contact'] ?? null,
+                'profile_photo' => $data['profile_photo'] ?? null,
+            ];
 
-        if ($user->staffProfile) {
-            $user->staffProfile->update($profileData);
-        } else {
-            $user->staffProfile()->create(array_merge($profileData, [
-                'employee_id' => 'EMP' . str_pad($user->id, 4, '0', STR_PAD_LEFT),
-                'employment_status' => 'full_time',
-            ]));
+            if ($user->staffProfile) {
+                $user->staffProfile->update($profileData);
+            } else {
+                $user->staffProfile()->create(array_merge($profileData, [
+                    'employee_id' => 'EMP' . str_pad($user->id, 4, '0', STR_PAD_LEFT),
+                    'employment_status' => 'active',
+                ]));
+            }
+
+            Notification::make()
+                ->success()
+                ->title('Profile Updated Successfully')
+                ->body('Your profile information has been saved.')
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->duration(5000)
+                ->send();
+                
+            // Refresh the profile relationship to show updated data
+            $user->load('staffProfile');
+            
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Error Updating Profile')
+                ->body('There was an error saving your profile. Please try again.')
+                ->icon('heroicon-o-x-circle')
+                ->iconColor('danger')
+                ->duration(5000)
+                ->send();
+                
+            \Log::error('Profile update error: ' . $e->getMessage());
         }
-
-        Notification::make()
-            ->success()
-            ->title('Profile Updated')
-            ->body('Your profile has been updated successfully.')
-            ->send();
     }
 
     public function updatePassword(): void
@@ -243,30 +270,50 @@ class MyProfile extends Page implements HasForms
         $data = $this->passwordForm->getState();
         $user = Auth::user();
 
-        // Verify current password
-        if (!Hash::check($data['current_password'], $user->password)) {
+        try {
+            // Verify current password
+            if (!Hash::check($data['current_password'], $user->password)) {
+                Notification::make()
+                    ->danger()
+                    ->title('Incorrect Password')
+                    ->body('The current password you entered is incorrect.')
+                    ->icon('heroicon-o-x-circle')
+                    ->iconColor('danger')
+                    ->duration(5000)
+                    ->send();
+                return;
+            }
+
+            // Update password
+            $user->update([
+                'password' => Hash::make($data['password']),
+            ]);
+
+            // Clear password form
+            $this->passwordData = [];
+            $this->passwordForm->fill([]);
+
+            Notification::make()
+                ->success()
+                ->title('Password Changed Successfully')
+                ->body('Your password has been updated. Please use your new password for future logins.')
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->duration(5000)
+                ->send();
+                
+        } catch (\Exception $e) {
             Notification::make()
                 ->danger()
-                ->title('Error')
-                ->body('The current password is incorrect.')
+                ->title('Error Changing Password')
+                ->body('There was an error updating your password. Please try again.')
+                ->icon('heroicon-o-x-circle')
+                ->iconColor('danger')
+                ->duration(5000)
                 ->send();
-            return;
+                
+            \Log::error('Password update error: ' . $e->getMessage());
         }
-
-        // Update password
-        $user->update([
-            'password' => Hash::make($data['password']),
-        ]);
-
-        // Clear password form
-        $this->passwordData = [];
-        $this->passwordForm->fill([]);
-
-        Notification::make()
-            ->success()
-            ->title('Password Changed')
-            ->body('Your password has been changed successfully.')
-            ->send();
     }
 
     public static function shouldRegisterNavigation(): bool
