@@ -40,6 +40,13 @@ class MyTasks extends Page implements HasTable
                     ->searchable(),
                 TextColumn::make('priority')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                        'urgent' => 'Urgent',
+                        default => ucfirst($state),
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'low' => 'success',
                         'medium' => 'primary',
@@ -49,6 +56,12 @@ class MyTasks extends Page implements HasTable
                     }),
                 TextColumn::make('status')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pending' => 'Pending',
+                        'in_progress' => 'In Progress',
+                        'completed' => 'Completed',
+                        default => ucfirst($state),
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
                         'in_progress' => 'primary',

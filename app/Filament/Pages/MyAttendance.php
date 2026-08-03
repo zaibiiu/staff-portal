@@ -33,6 +33,13 @@ class MyAttendance extends Page implements HasTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'present' => 'Present',
+                        'absent' => 'Absent',
+                        'leave' => 'Leave',
+                        'late' => 'Late',
+                        default => ucfirst($state),
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'present' => 'success',
                         'absent' => 'danger',
@@ -41,11 +48,9 @@ class MyAttendance extends Page implements HasTable
                         default => 'gray',
                     }),
                 TextColumn::make('check_in')
-                    ->time()
-                    ->default('N/A'),
+                    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('h:i A') : 'N/A'),
                 TextColumn::make('check_out')
-                    ->time()
-                    ->default('N/A'),
+                    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('h:i A') : 'N/A'),
                 TextColumn::make('remarks')
                     ->limit(30)
                     ->toggleable(),
