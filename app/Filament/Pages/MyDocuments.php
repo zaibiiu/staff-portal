@@ -35,6 +35,14 @@ class MyDocuments extends Page implements HasTable
                 TextColumn::make('document_type')
                     ->label('Type')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'cnic' => 'CNIC',
+                        'contract' => 'Contract',
+                        'certificate' => 'Certificate',
+                        'degree' => 'Degree',
+                        'other' => 'Other',
+                        default => ucfirst($state),
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'cnic' => 'primary',
                         'contract' => 'success',

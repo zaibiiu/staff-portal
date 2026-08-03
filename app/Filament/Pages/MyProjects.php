@@ -40,6 +40,14 @@ class MyProjects extends Page implements HasTable
                     ->limit(30),
                 TextColumn::make('stage')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pending' => 'Pending',
+                        'planning' => 'Planning',
+                        'in_progress' => 'In Progress',
+                        'review' => 'Review',
+                        'completed' => 'Completed',
+                        default => ucfirst(str_replace('_', ' ', $state)),
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'gray',
                         'planning' => 'info',
@@ -50,6 +58,13 @@ class MyProjects extends Page implements HasTable
                     }),
                 TextColumn::make('status')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'active' => 'Active',
+                        'on_hold' => 'On Hold',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                        default => ucfirst(str_replace('_', ' ', $state)),
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
                         'on_hold' => 'warning',
