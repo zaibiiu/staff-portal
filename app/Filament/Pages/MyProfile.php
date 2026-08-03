@@ -57,8 +57,11 @@ class MyProfile extends Page implements HasForms
         $this->photoForm->fill([
             'profile_photo' => $profile?->profile_photo ?? null,
         ]);
-
-        $this->passwordForm->fill([]);
+        
+        // Initialize password form (only for admin users)
+        if ($user->isAdmin()) {
+            $this->passwordForm->fill([]);
+        }
     }
 
     // ─── Photo form ───────────────────────────────────────────────────────────
@@ -241,7 +244,14 @@ class MyProfile extends Page implements HasForms
 
     protected function getForms(): array
     {
-        return ['form', 'passwordForm', 'photoForm'];
+        $forms = ['form', 'photoForm'];
+        
+        // Only add password form for admin users
+        if (Auth::user()->isAdmin()) {
+            $forms[] = 'passwordForm';
+        }
+        
+        return $forms;
     }
 
     protected function getFormActions(): array
@@ -318,7 +328,7 @@ class MyProfile extends Page implements HasForms
         }
     }
 
-    // ─── Password form ────────────────────────────────────────────────────────
+    // ─── Password form (Admin only) ───────────────────────────────────────────
 
     public function passwordForm(Schema $schema): Schema
     {
@@ -355,6 +365,17 @@ class MyProfile extends Page implements HasForms
 
     public function updatePassword(): void
     {
+        // Only allow admins to change password from profile
+        if (!Auth::user()->isAdmin()) {
+            Notification::make()
+                ->danger()
+                ->title('Access Denied')
+                ->body('Staff users cannot change their password. Please contact an administrator.')
+                ->duration(5000)
+                ->send();
+            return;
+        }
+        
         $data = $this->passwordForm->getState();
         $user = Auth::user();
 

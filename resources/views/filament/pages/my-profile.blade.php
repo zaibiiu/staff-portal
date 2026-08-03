@@ -116,41 +116,43 @@
             </form>
         </div>
 
-        {{-- ── Password Change Form ─────────────────────────────────────────── --}}
-        <div
-            x-data="{ saving: false }"
-            x-on:submit.prevent="
-                saving = true;
-                $wire.call('updatePassword')
-                    .then(() => { saving = false; })
-                    .catch(() => { saving = false; })
-            "
-        >
-            <form x-on:submit.prevent="$dispatch('submit')">
-                {{ $this->passwordForm }}
+        {{-- ── Password Change Form (Admin Only) ────────────────────────────── --}}
+        @if(auth()->user()->isAdmin())
+            <div
+                x-data="{ saving: false }"
+                x-on:submit.prevent="
+                    saving = true;
+                    $wire.call('updatePassword')
+                        .then(() => { saving = false; })
+                        .catch(() => { saving = false; })
+                "
+            >
+                <form x-on:submit.prevent="$dispatch('submit')">
+                    {{ $this->passwordForm }}
 
-                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
-                    <button
-                        type="submit"
-                        :disabled="saving"
-                        style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 0.875rem 2rem; border-radius: 0.625rem; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); transition: all 0.2s ease; display: flex; align-items: center; gap: 0.5rem; min-width: 180px; justify-content: center;"
-                    >
-                        <span x-show="!saving" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                            <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-                            </svg>
-                            <span>Change Password</span>
-                        </span>
-                        <span x-show="saving" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                            <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0; animation: spin 1s linear infinite;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                            </svg>
-                            <span>Updating...</span>
-                        </span>
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+                        <button
+                            type="submit"
+                            :disabled="saving"
+                            style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 0.875rem 2rem; border-radius: 0.625rem; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); transition: all 0.2s ease; display: flex; align-items: center; gap: 0.5rem; min-width: 180px; justify-content: center;"
+                        >
+                            <span x-show="!saving" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                                <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                                </svg>
+                                <span>Change Password</span>
+                            </span>
+                            <span x-show="saving" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                                <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0; animation: spin 1s linear infinite;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                                <span>Updating...</span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        @endif
 
     </div>
 

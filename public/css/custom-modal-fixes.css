@@ -1,0 +1,65 @@
+/* Fix Filament Modal Scrolling Issues */
+
+/* Make modal content scrollable */
+.fi-modal-content {
+    max-height: calc(100vh - 8rem) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Ensure modal body is scrollable */
+.fi-modal-body {
+    max-height: calc(100vh - 16rem) !important;
+    overflow-y: auto !important;
+}
+
+/* Fix for relation manager modals specifically */
+.fi-modal .fi-form {
+    max-height: calc(100vh - 20rem) !important;
+    overflow-y: auto !important;
+}
+
+/* Keep modal footer fixed at bottom */
+.fi-modal-footer {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: white !important;
+    z-index: 10 !important;
+    border-top: 1px solid #e5e7eb !important;
+    padding: 1rem 1.5rem !important;
+    margin: 0 -1.5rem -1.5rem -1.5rem !important;
+}
+
+/* Smooth scrolling */
+.fi-modal-content,
+.fi-modal-body,
+.fi-modal .fi-form {
+    scroll-behavior: smooth !important;
+}
+
+/* Custom scrollbar styling */
+.fi-modal-content::-webkit-scrollbar,
+.fi-modal-body::-webkit-scrollbar,
+.fi-modal .fi-form::-webkit-scrollbar {
+    width: 8px;
+}
+
+.fi-modal-content::-webkit-scrollbar-track,
+.fi-modal-body::-webkit-scrollbar-track,
+.fi-modal .fi-form::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.fi-modal-content::-webkit-scrollbar-thumb,
+.fi-modal-body::-webkit-scrollbar-thumb,
+.fi-modal .fi-form::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.fi-modal-content::-webkit-scrollbar-thumb:hover,
+.fi-modal-body::-webkit-scrollbar-thumb:hover,
+.fi-modal .fi-form::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

@@ -6,6 +6,8 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -48,12 +50,6 @@ class UserResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
-                        TextInput::make('password')
-                            ->password()
-                            ->required(fn (string $operation): bool => $operation === 'create')
-                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->maxLength(255),
                         Select::make('role')
                             ->options([
                                 'admin' => 'Admin',
@@ -66,6 +62,56 @@ class UserResource extends Resource
                             ->default(true)
                             ->required(),
                     ])->columns(2),
+                
+                Section::make('Password Management')
+                    ->description('Only change the password when the toggle is enabled')
+                    ->schema([
+                        Toggle::make('change_password')
+                            ->label('Change Password')
+                            ->helperText('Enable this to set a new password for the user')
+                            ->live()
+                            ->default(false)
+                            ->dehydrated(false)
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                // Clear password fields when toggle is turned off
+                                if (!$state) {
+                                    $set('password', null);
+                                    $set('password_confirmation', null);
+                                }
+                            }),
+                        TextInput::make('password')
+                            ->password()
+                            ->label('New Password')
+                            ->revealable()
+                            ->required(fn (callable $get, string $operation): bool => 
+                                $operation === 'create' || $get('change_password') === true
+                            )
+                            ->visible(fn (callable $get, string $operation): bool => 
+                                $operation === 'create' || $get('change_password') === true
+                            )
+                            ->minLength(8)
+                            ->same('password_confirmation')
+                            ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
+                            ->dehydrated(fn (callable $get, string $operation): bool => 
+                                $operation === 'create' || ($get('change_password') === true && filled($get('password')))
+                            )
+                            ->maxLength(255)
+                            ->helperText('Minimum 8 characters'),
+                        TextInput::make('password_confirmation')
+                            ->password()
+                            ->label('Confirm Password')
+                            ->revealable()
+                            ->required(fn (callable $get, string $operation): bool => 
+                                $operation === 'create' || $get('change_password') === true
+                            )
+                            ->visible(fn (callable $get, string $operation): bool => 
+                                $operation === 'create' || $get('change_password') === true
+                            )
+                            ->dehydrated(false)
+                            ->helperText('Re-enter the password to confirm'),
+                    ])
+                    ->columns(1)
+                    ->visible(fn (string $operation): bool => $operation === 'edit'),
             ]);
     }
 
@@ -89,6 +135,9 @@ class UserResource extends Resource
                     ->label('Active')
                     ->boolean()
                     ->sortable(),
+                Tables\Columns\ViewColumn::make('staff_records')
+                    ->label('Staff Records')
+                    ->view('filament.tables.columns.staff-records-actions'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -111,18 +160,14 @@ class UserResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->recordUrl(null);
     }
 
     public static function getRelations(): array
     {
         return [
-            RelationManagers\StaffProfileRelationManager::class,
-            RelationManagers\SalariesRelationManager::class,
-            RelationManagers\DocumentsRelationManager::class,
-            RelationManagers\TasksRelationManager::class,
-            RelationManagers\CommissionsRelationManager::class,
-            RelationManagers\AttendancesRelationManager::class,
+            // Relation managers removed - now using dedicated resource pages
         ];
     }
 

@@ -24,17 +24,28 @@ class TasksRelationManager extends RelationManager
         return $schema
             ->schema([
                 Forms\Components\TextInput::make('title')
+                    ->label('Task Title')
                     ->required()
                     ->maxLength(255)
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->helperText('Brief descriptive title for the task'),
+                    
                 Forms\Components\Textarea::make('description')
+                    ->label('Description')
                     ->rows(3)
-                    ->columnSpanFull(),
+                    ->maxLength(1000)
+                    ->columnSpanFull()
+                    ->helperText('Detailed description of the task'),
+                    
                 Forms\Components\Select::make('project_id')
+                    ->label('Project')
                     ->relationship('project', 'name')
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->helperText('Optional: Associate with a project'),
+                    
                 Forms\Components\Select::make('priority')
+                    ->label('Priority')
                     ->options([
                         'low' => 'Low',
                         'medium' => 'Medium',
@@ -42,16 +53,29 @@ class TasksRelationManager extends RelationManager
                         'urgent' => 'Urgent',
                     ])
                     ->default('medium')
-                    ->required(),
-                Forms\Components\DatePicker::make('due_date'),
+                    ->required()
+                    ->native(false)
+                    ->helperText('Task priority level'),
+                    
+                Forms\Components\DatePicker::make('due_date')
+                    ->label('Due Date')
+                    ->required()
+                    ->minDate(now())
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
+                    ->helperText('Task deadline'),
+                    
                 Forms\Components\Select::make('status')
+                    ->label('Status')
                     ->options([
                         'pending' => 'Pending',
                         'in_progress' => 'In Progress',
                         'completed' => 'Completed',
                     ])
                     ->default('pending')
-                    ->required(),
+                    ->required()
+                    ->native(false)
+                    ->helperText('Current task status'),
             ]);
     }
 

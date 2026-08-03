@@ -1622,3 +1622,11 @@ input[type="date"],
     border: 1px solid #e2e8f0 !important;
     border-radius: 10px !important;
 }
+.fi-modal-content {
+    overflow-y: auto !important;
+}
+.fi-fo-date-time-picker .fi-fo-date-time-picker-display-text-input {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px !important;
+    line-height: 2rem;
+}

@@ -24,10 +24,17 @@ class AttendancesRelationManager extends RelationManager
         return $schema
             ->schema([
                 Forms\Components\DatePicker::make('date')
+                    ->label('Attendance Date')
                     ->required()
+                    ->maxDate(now())
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
                     ->default(now())
-                    ->unique(ignoreRecord: true),
+                    ->unique(ignoreRecord: true)
+                    ->helperText('Date of attendance record'),
+                    
                 Forms\Components\Select::make('status')
+                    ->label('Attendance Status')
                     ->options([
                         'present' => 'Present',
                         'absent' => 'Absent',
@@ -35,14 +42,28 @@ class AttendancesRelationManager extends RelationManager
                         'late' => 'Late',
                     ])
                     ->default('present')
-                    ->required(),
+                    ->required()
+                    ->native(false),
+                    
                 Forms\Components\TimePicker::make('check_in')
-                    ->seconds(false),
+                    ->label('Check In Time')
+                    ->seconds(false)
+                    ->native(false)
+                    ->helperText('Format: HH:MM'),
+                    
                 Forms\Components\TimePicker::make('check_out')
-                    ->seconds(false),
+                    ->label('Check Out Time')
+                    ->seconds(false)
+                    ->native(false)
+                    ->after('check_in')
+                    ->helperText('Must be after check-in time'),
+                    
                 Forms\Components\Textarea::make('remarks')
+                    ->label('Remarks')
                     ->rows(3)
-                    ->columnSpanFull(),
+                    ->maxLength(500)
+                    ->columnSpanFull()
+                    ->helperText('Optional notes about this attendance'),
             ]);
     }
 

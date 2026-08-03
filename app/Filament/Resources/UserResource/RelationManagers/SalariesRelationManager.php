@@ -24,21 +24,42 @@ class SalariesRelationManager extends RelationManager
         return $schema
             ->schema([
                 Forms\Components\TextInput::make('amount')
+                    ->label('Salary Amount')
                     ->required()
                     ->numeric()
                     ->prefix('PKR')
-                    ->maxValue(9999999999.99),
+                    ->minValue(0)
+                    ->maxValue(9999999999.99)
+                    ->step(0.01)
+                    ->helperText('Enter salary amount in PKR'),
+                    
                 Forms\Components\DatePicker::make('effective_date')
+                    ->label('Effective Date')
                     ->required()
-                    ->default(now()),
+                    ->maxDate(now()->addYear())
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
+                    ->default(now())
+                    ->helperText('Date when this salary becomes effective'),
+                    
                 Forms\Components\DatePicker::make('end_date')
-                    ->after('effective_date'),
+                    ->label('End Date')
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
+                    ->after('effective_date')
+                    ->helperText('Optional: Date when this salary ends'),
+                    
                 Forms\Components\Toggle::make('is_current')
                     ->label('Current Salary')
-                    ->default(true),
+                    ->default(true)
+                    ->helperText('Mark as current active salary'),
+                    
                 Forms\Components\Textarea::make('remarks')
+                    ->label('Remarks')
                     ->rows(3)
-                    ->columnSpanFull(),
+                    ->maxLength(500)
+                    ->columnSpanFull()
+                    ->helperText('Optional notes about this salary entry'),
             ]);
     }
 

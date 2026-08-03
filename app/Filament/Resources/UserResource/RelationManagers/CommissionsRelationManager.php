@@ -24,20 +24,38 @@ class CommissionsRelationManager extends RelationManager
         return $schema
             ->schema([
                 Forms\Components\TextInput::make('amount')
+                    ->label('Commission Amount')
                     ->required()
                     ->numeric()
                     ->prefix('PKR')
-                    ->maxValue(9999999999.99),
+                    ->minValue(0)
+                    ->maxValue(9999999999.99)
+                    ->step(0.01)
+                    ->helperText('Enter commission amount in PKR'),
+                    
                 Forms\Components\DatePicker::make('commission_date')
+                    ->label('Commission Date')
                     ->required()
-                    ->default(now()),
+                    ->maxDate(now())
+                    ->native(false)
+                    ->displayFormat('d/m/Y')
+                    ->default(now())
+                    ->helperText('Date when commission was earned'),
+                    
                 Forms\Components\TextInput::make('commission_month')
+                    ->label('Commission Month')
                     ->required()
                     ->placeholder('e.g., January 2024')
-                    ->maxLength(255),
+                    ->maxLength(50)
+                    ->regex('/^[A-Za-z]+\s\d{4}$/')
+                    ->helperText('Format: Month YYYY (e.g., January 2024)'),
+                    
                 Forms\Components\Textarea::make('description')
+                    ->label('Description')
                     ->rows(3)
-                    ->columnSpanFull(),
+                    ->maxLength(500)
+                    ->columnSpanFull()
+                    ->helperText('Optional: Details about this commission'),
             ]);
     }
 
