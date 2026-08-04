@@ -37,9 +37,12 @@ class MySalary extends Page implements HasTable
                     ->sortable(),
                 TextColumn::make('end_date')
                     ->label('To Date')
-                    ->date()
                     ->sortable()
-                    ->default('Current'),
+                    ->formatStateUsing(function ($state) {
+                        return $state
+                            ? \Carbon\Carbon::parse($state)->format('M d, Y')
+                            : 'Current';
+                    }),
                 IconColumn::make('is_current')
                     ->label('Current')
                     ->boolean()
