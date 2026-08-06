@@ -12,6 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -117,10 +118,18 @@ class AttendanceResource extends Resource
                                 Forms\Components\FileUpload::make('selfie')
                                     ->label('Selfie')
                                     ->image()
-                                    ->disabled()
                                     ->directory('attendance-selfies')
                                     ->visibility('public')
-                                    ->downloadable(),
+                                    ->downloadable()
+                                    ->hidden(fn ($record) => $record && $record->selfie)
+                                    ->required(fn ($record) => !$record || !$record->selfie),
+                                Forms\Components\Placeholder::make('selfie_display')
+                                    ->label('Selfie')
+                                    ->content(fn ($record) => $record && $record->selfie 
+                                        ? '<img src="' . asset('storage/' . $record->selfie) . '" class="rounded-lg max-w-xs" style="max-height: 200px;">' 
+                                        : 'No selfie')
+                                    ->hidden(fn ($record) => !$record || !$record->selfie)
+                                    ->html(),
                             ])
                             ->columns(2),
                     ])
@@ -164,7 +173,10 @@ class AttendanceResource extends Resource
                     ->label('Selfie')
                     ->circular()
                     ->size(40)
-                    ->toggleable(),
+                    ->toggleable()
+                    ->disk('public')
+                    ->url(fn ($record) => $record->selfie ? Storage::disk('public')->url($record->selfie) : null)
+                    ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('latitude')
                     ->label('GPS Location')
                     ->formatStateUsing(fn ($state, $record) => $state && $record->longitude 
