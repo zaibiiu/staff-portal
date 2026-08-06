@@ -1,4 +1,5 @@
 <x-filament-panels::page>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="space-y-6" style="font-family:'Inter',ui-sans-serif,sans-serif;">
 
     {{-- Mark Attendance Button --}}
@@ -437,8 +438,10 @@ async function submitAttendance() {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
             },
+            credentials: 'same-origin',
             body: formData
         });
         
