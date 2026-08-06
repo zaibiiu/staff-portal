@@ -433,7 +433,7 @@ async function submitAttendance() {
         formData.append('longitude', currentLongitude);
         formData.append('selfie', blob, 'selfie.jpg');
         
-        const submitResponse = await fetch('/api/attendance/mark', {
+        const submitResponse = await fetch('/attendance/mark', {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
