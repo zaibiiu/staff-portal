@@ -126,7 +126,7 @@ class AttendanceResource extends Resource
                                 Forms\Components\Placeholder::make('selfie_display')
                                     ->label('Selfie')
                                     ->content(fn ($record) => $record && $record->selfie 
-                                        ? '<img src="' . asset('storage/' . $record->selfie) . '" class="rounded-lg max-w-xs" style="max-height: 200px;">' 
+                                        ? '<a href="' . asset('storage/' . $record->selfie) . '" target="_blank"><img src="' . asset('storage/' . $record->selfie) . '" class="rounded-lg max-w-xs" style="max-height: 200px; width: auto;"></a>' 
                                         : 'No selfie')
                                     ->hidden(fn ($record) => !$record || !$record->selfie)
                                     ->html(),
@@ -174,8 +174,7 @@ class AttendanceResource extends Resource
                     ->circular()
                     ->size(40)
                     ->toggleable()
-                    ->disk('public')
-                    ->url(fn ($record) => $record->selfie ? Storage::disk('public')->url($record->selfie) : null)
+                    ->url(fn ($record) => $record->selfie ? asset('storage/' . $record->selfie) : null)
                     ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('latitude')
                     ->label('GPS Location')
