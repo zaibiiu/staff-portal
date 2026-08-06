@@ -166,14 +166,17 @@ class AttendanceResource extends Resource
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('check_in')
-                    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('H:i') : 'N/A'),
+                    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('h:i A') : 'N/A'),
+
                 Tables\Columns\TextColumn::make('check_out')
-                    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('H:i') : 'N/A'),
+                    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('h:i A') : 'N/A'),
                 Tables\Columns\ImageColumn::make('selfie')
                     ->label('Selfie')
                     ->circular()
                     ->size(40)
                     ->toggleable()
+                    ->disk('public')
+                    ->visibility('public')
                     ->url(fn ($record) => $record->selfie ? asset('storage/' . $record->selfie) : null)
                     ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('latitude')
