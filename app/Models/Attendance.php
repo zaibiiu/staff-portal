@@ -17,12 +17,18 @@ class Attendance extends Model
         'check_in',
         'check_out',
         'remarks',
+        'latitude',
+        'longitude',
+        'selfie',
+        'selfie_taken_at',
+        'attendance_source',
     ];
 
     protected function casts(): array
     {
         return [
             'date' => 'date',
+            'selfie_taken_at' => 'datetime',
         ];
     }
 

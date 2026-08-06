@@ -23,6 +23,15 @@ class MyAttendance extends Page implements HasTable
 
     protected static string|UnitEnum|null $navigationGroup = 'My Portal';
 
+    public $todayAttendance = null;
+
+    public function mount(): void
+    {
+        $this->todayAttendance = Attendance::where('user_id', Auth::id())
+            ->where('date', now()->toDateString())
+            ->first();
+    }
+
     public function table(Table $table): Table
     {
         return $table

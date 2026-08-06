@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AttendanceResource\Pages;
 use App\Models\Attendance;
-use App\Models\User;
+use Filament\Actions\Action;
 use BackedEnum;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -18,6 +18,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Schemas\Components\Section;
+use Filament\Tables\Columns\ImageColumn;
 
 class AttendanceResource extends Resource
 {
@@ -89,6 +90,39 @@ class AttendanceResource extends Resource
                             ->maxLength(500)
                             ->columnSpanFull()
                             ->helperText('Optional notes about this attendance'),
+                        
+                        Section::make('Location & Selfie')
+                            ->schema([
+                                Forms\Components\TextInput::make('attendance_source')
+                                    ->label('Attendance Source')
+                                    ->disabled()
+                                    ->formatStateUsing(fn ($state) => $state === 'self' ? 'Staff Self-Attendance' : 'Admin Created'),
+                                Forms\Components\TextInput::make('latitude')
+                                    ->label('Latitude')
+                                    ->disabled()
+                                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 8) : 'N/A'),
+                                Forms\Components\TextInput::make('longitude')
+                                    ->label('Longitude')
+                                    ->disabled()
+                                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 8) : 'N/A')
+                                    ->suffixAction(
+                                        Action::make('openMaps')
+                                            ->icon('heroicon-o-map')
+                                            ->url(fn ($record) => $record->latitude && $record->longitude 
+                                                ? "https://maps.google.com/?q={$record->latitude},{$record->longitude}" 
+                                                : null)
+                                            ->openUrlInNewTab()
+                                            ->disabled(fn ($record) => !$record->latitude || !$record->longitude)
+                                    ),
+                                Forms\Components\FileUpload::make('selfie')
+                                    ->label('Selfie')
+                                    ->image()
+                                    ->disabled()
+                                    ->directory('attendance-selfies')
+                                    ->visibility('public')
+                                    ->downloadable(),
+                            ])
+                            ->columns(2),
                     ])
                     ->columns(2),
             ]);
@@ -126,6 +160,35 @@ class AttendanceResource extends Resource
                     ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('H:i') : 'N/A'),
                 Tables\Columns\TextColumn::make('check_out')
                     ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('H:i') : 'N/A'),
+                Tables\Columns\ImageColumn::make('selfie')
+                    ->label('Selfie')
+                    ->circular()
+                    ->size(40)
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('latitude')
+                    ->label('GPS Location')
+                    ->formatStateUsing(fn ($state, $record) => $state && $record->longitude 
+                        ? sprintf('%.6f, %.6f', $state, $record->longitude) 
+                        : 'N/A')
+                    ->url(fn ($record) => $record->latitude && $record->longitude 
+                        ? "https://maps.google.com/?q={$record->latitude},{$record->longitude}" 
+                        : null)
+                    ->openUrlInNewTab()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('attendance_source')
+                    ->label('Source')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'self' => 'Self',
+                        'admin' => 'Admin',
+                        default => ucfirst($state),
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'self' => 'success',
+                        'admin' => 'info',
+                        default => 'gray',
+                    })
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('remarks')
                     ->limit(30)
                     ->toggleable(),
@@ -143,6 +206,26 @@ class AttendanceResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
+            ])
+            ->headerActions([
+                Action::make('cleanupSelfies')
+                    ->label('Cleanup Old Selfies')
+                    ->icon('heroicon-o-trash')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Cleanup Old Attendance Selfies')
+                    ->modalDescription('This will delete all attendance selfie images older than 14 days. Attendance records will be kept. This action cannot be undone.')
+                    ->modalSubmitActionLabel('Yes, Delete Old Selfies')
+                    ->action(function () {
+                        $cleanupService = new \App\Services\AttendanceSelfieCleanupService();
+                        $result = $cleanupService->cleanupOldSelfies(14);
+                        
+                        \Filament\Notifications\Notification::make()
+                            ->title('Selfie Cleanup Completed')
+                            ->body("Deleted: {$result['deleted_count']} selfies, Failed: {$result['failed_count']}")
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
